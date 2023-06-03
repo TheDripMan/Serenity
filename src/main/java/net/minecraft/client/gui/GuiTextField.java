@@ -650,7 +650,7 @@ public class GuiTextField extends Gui
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         if (blue) {
-            GlStateManager.color(0, 103/255F, 192/255F);
+            GlStateManager.color(0, 120/255F, 212/255F);
         } else {
             GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
         }

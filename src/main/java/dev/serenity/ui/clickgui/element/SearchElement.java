@@ -23,16 +23,19 @@ public class SearchElement {
 
         searchBox = new GuiTextField(0, Fonts.font20, left + 7, (top + bottom) / 2 - 5, 120, 20, false, true);
         searchBox.setEnableBackgroundDrawing(false);
-        searchBox.setTextColor(new Color(42, 42, 42).getRGB());
     }
 
     public void drawElement(int mouseX, int mouseY, float width, float height, ArrayList<CategoryElement> categoryElements) {
-        RenderUtils.drawRoundedRectWithBorder(left, top, right, bottom, 4F, new Color(250, 252, 253).getRGB(), new Color(224, 230, 234).getRGB(), 0.5F);
+        RenderUtils.drawRoundedRectWithBorder(left, top, right, bottom, 4F, new Color(45, 45, 45).getRGB(), new Color(48, 48, 48).getRGB(), 0.5F);
+        Gui.drawRect(left + 1F, bottom - 1F, right - 1F, bottom, new Color(154, 154, 154).getRGB());
 
         if (searchBox.isFocused()) {
-            Gui.drawRect(left + 1F, bottom - 1F, right - 1F, bottom, new Color(0, 103, 192).getRGB());
+            searchBox.setTextColor(new Color(255, 255, 255).getRGB());
+            RenderUtils.drawRoundedRectWithBorder(left, top, right, bottom, 4F, new Color(31, 31, 31).getRGB(), new Color(48, 48, 48).getRGB(), 0.5F);
+            Gui.drawRect(left + 1F, bottom - 1F, right - 1F, bottom, new Color(76, 194, 255).getRGB());
             searchBox.drawTextBox();
         } else if (searchBox.text.length() == 0) {
+            searchBox.setTextColor(new Color(207, 207, 207).getRGB());
             searchBox.text = "Find a module";
             searchBox.drawTextBox();
             searchBox.text = "";
@@ -41,7 +44,7 @@ public class SearchElement {
         }
 
         if (searched) {
-            Fonts.fontBold30.drawString("Search results", this.left, 90F, new Color(25, 26, 26).getRGB());
+            Fonts.fontBold30.drawString("Search results", this.left, 90F, new Color(255, 255, 255).getRGB());
 
             float count = this.bottom + 20F;
             int results = 0;
@@ -59,7 +62,7 @@ public class SearchElement {
 
             if (!searchBox.text.isEmpty()) {
                 if (results == 0) {
-                    Fonts.font20.drawString("No results for " + searchBox.text, this.left, this.bottom + 15F, new Color(25, 26, 26).getRGB());
+                    Fonts.font20.drawString("No results for " + searchBox.text, this.left, this.bottom + 15F, new Color(255, 255, 255).getRGB());
                 }
             }
 

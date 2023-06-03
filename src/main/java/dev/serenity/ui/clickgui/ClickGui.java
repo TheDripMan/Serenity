@@ -35,11 +35,11 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        RenderUtils.drawRoundedRect(150F, 60F, this.width - 150F, this.height - 60F, 4F, new Color(239, 244, 249).getRGB());
+        RenderUtils.drawRoundedRect(150F, 60F, this.width - 150F, this.height - 60F, 4F, new Color(32, 32, 32).getRGB());
 
         // player avatar
         Stencil.write(true);
-        RenderUtils.drawFilledCircle(184F, 105F, 25F, new Color(239, 244, 249));
+        RenderUtils.drawFilledCircle(184F, 105F, 25F, new Color(45, 45, 45));
         Stencil.erase(true);
         if (mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID()) != null) {
             final ResourceLocation skin = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID()).getLocationSkin();
@@ -60,7 +60,7 @@ public class ClickGui extends GuiScreen {
         }
         Stencil.dispose();
 
-        Fonts.fontBold30.drawString(mc.thePlayer.getGameProfile().getName(), 215F, (60 + 150) / 2F - Fonts.fontBold30.FONT_HEIGHT / 2F + 2F , new Color(25, 26, 26).getRGB());
+        Fonts.fontBold30.drawString(mc.thePlayer.getGameProfile().getName(), 215F, (60 + 150) / 2F - Fonts.fontBold30.FONT_HEIGHT / 2F + 2F , new Color(255, 255, 255).getRGB());
 
         searchElement.drawElement(mouseX, mouseY, this.width - 150F, this.height - 60F, categoryElements);
 

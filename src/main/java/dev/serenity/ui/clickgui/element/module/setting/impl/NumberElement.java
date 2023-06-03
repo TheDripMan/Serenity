@@ -21,14 +21,14 @@ public class NumberElement extends SettingElement {
     public void drawElement(int mouseX, int mouseY, float left, float top, float right, float bottom) {
         float y2 = top + settingHeight;
 
-        Color backgroundColor = new Color(251, 251, 253);
+        Color backgroundColor = new Color(43, 43, 43);
         if (HoveringUtils.isHovering(mouseX, mouseY, left, top, right, y2)) {
-            backgroundColor = new Color(245, 246, 249);
+            backgroundColor = new Color(50, 50, 50);
         }
 
-        RenderUtils.drawRoundedRectWithBorder(left, top, right, y2, 3F, backgroundColor.getRGB(), new Color(225, 230, 234).getRGB(), 0.5F);
+        RenderUtils.drawRoundedRect(left - 0.5F, top - 0.5F, right + 0.5F, y2 + 0.5F, 3F, backgroundColor.getRGB());
 
-        Fonts.font20.drawString(setting.name, left + 15F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT / 2F + 2F, new Color(26, 27, 27).getRGB());
+        Fonts.font20.drawString(setting.name, left + 15F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT / 2F + 2F, new Color(255, 255, 255).getRGB());
 
         float startX = right - 150F;
         float endX = right - 30F;
@@ -42,7 +42,7 @@ public class NumberElement extends SettingElement {
             }
         }
 
-        float currentPosX = startX + range * numberSetting.getValue();
+        float currentPosX = startX + range * numberSetting.getValue() - 7/2F;
 
         String text;
         if ((int) numberSetting.getValue() == numberSetting.getValue()) {
@@ -54,12 +54,11 @@ public class NumberElement extends SettingElement {
 
         Fonts.font20.drawString(text, startX - 20F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT / 2F + 2F, new Color(180, 179, 180).getRGB());
 
-        RenderUtils.drawRoundedRect(startX + range, (top + y2) / 2F - 1F, currentPosX, (top + y2) / 2F + 1F, 1F, new Color(14, 106, 186).getRGB());
-        RenderUtils.drawRoundedRect(currentPosX, (top + y2) / 2F - 1F, endX, (top + y2) / 2F + 1F, 1F, new Color(139, 139, 140).getRGB());
+        RenderUtils.drawRoundedRect(startX + range, (top + y2) / 2F - 1F, currentPosX, (top + y2) / 2F + 1F, 1F, new Color(76, 194, 255).getRGB());
+        RenderUtils.drawRoundedRect(currentPosX, (top + y2) / 2F - 1F, endX, (top + y2) / 2F + 1F, 1F, new Color(159, 159, 159).getRGB());
 
-        RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 7F, new Color(227, 227, 229));
-        RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 6.5F, new Color(255, 255, 255));
-        RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 3F, new Color(0, 103, 192));
+        RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 7F, new Color(69, 69, 69));
+        RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 3F, new Color(76, 194, 255));
 
     }
 }

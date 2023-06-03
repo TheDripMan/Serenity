@@ -36,18 +36,18 @@ public class CategoryElement {
         float y2 = top + 30F;
 
         if (HoveringUtils.isHovering(mouseX, mouseY, x1, top, x2, y2)) {
-            RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(231, 235, 240).getRGB());
+            RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(45, 45, 45).getRGB());
         }
 
         handleScrolling(wheel);
 
         if (category == Category.selectedCategory) {
-            RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(231, 235, 240).getRGB());
+            RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(45, 45, 45).getRGB());
             RenderUtils.drawImage(location, x1 + 15F - 7F, (top + y2) / 2F - 7F, 14F, 14F);
-            Fonts.fontBold20.drawString(category.getName(), x1 + 30F, (top + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, new Color(25, 26, 26).getRGB());
-            RenderUtils.drawRoundedRect(x1 + 2F, top + 5F, x1 + 4F, y2 - 5F, 1F, new Color(0, 103, 192).getRGB());
+            Fonts.fontBold20.drawString(category.getName(), x1 + 30F, (top + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, new Color(255, 255, 255).getRGB());
+            RenderUtils.drawRoundedRect(x1 + 2F, top + 5F, x1 + 4F, y2 - 5F, 1F, new Color(76, 194, 255).getRGB());
 
-            Color textColor = new Color(25, 26, 26);
+            Color textColor = new Color(255, 255, 255);
 
             if (Module.selectedModule == null) {
                 float startY = 120F + Category.selectedCategory.scrollHeight;
@@ -58,10 +58,10 @@ public class CategoryElement {
                     startY += 50F;
                 }
             } else {
-                Fonts.fontBold30.drawString("  >", x2 + 30F + Fonts.fontBold30.getStringWidth(category.getName()), 90F, new Color(100, 103, 105).getRGB());
+                Fonts.fontBold30.drawString("  >", x2 + 30F + Fonts.fontBold30.getStringWidth(category.getName()), 90F, new Color(204, 204, 204).getRGB());
                 Fonts.fontBold30.drawString(Module.selectedModule.getName(), x2 + 30F + Fonts.fontBold30.getStringWidth(category.getName()) + Fonts.fontBold30.getStringWidth("  >  "), 90F, textColor.getRGB());
                 if (!HoveringUtils.isHovering(mouseX, mouseY, x2 + 30F, 90F, x2 + 30F + Fonts.fontBold30.getStringWidth(category.getName()), 90F + Fonts.fontBold30.FONT_HEIGHT)) {
-                    textColor = new Color(170, 174, 178);
+                    textColor = new Color(204, 204, 204);
                 }
 
                 float startY = 120F + Module.selectedModule.settingScrollHeight;
@@ -79,7 +79,7 @@ public class CategoryElement {
             Fonts.fontBold30.drawString(category.getName(), x2 + 30F, 90F, textColor.getRGB());
         } else {
             RenderUtils.drawImage(location, x1 + 15F - 7F, (top + y2) / 2F - 7F, 14F, 14F);
-            Fonts.fontBold20.drawString(category.getName(), x1 + 30F, (top + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, new Color(25, 26, 26).getRGB());
+            Fonts.fontBold20.drawString(category.getName(), x1 + 30F, (top + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, new Color(255, 255, 255).getRGB());
         }
     }
 

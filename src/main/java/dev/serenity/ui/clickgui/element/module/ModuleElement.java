@@ -5,13 +5,13 @@ import dev.serenity.module.Module;
 import dev.serenity.setting.Setting;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
+import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
-import dev.serenity.setting.impl.TextSetting;
 import dev.serenity.ui.clickgui.element.CategoryElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.BooleanElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.ModeElement;
+import dev.serenity.ui.clickgui.element.module.setting.impl.NoteElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.NumberElement;
-import dev.serenity.ui.clickgui.element.module.setting.impl.TextElement;
 import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.other.HoveringUtils;
 import dev.serenity.utilities.render.RenderUtils;
@@ -30,18 +30,18 @@ public class ModuleElement {
     public void drawElement(int mouseX, int mouseY, float left, float top, float right, float bottom) {
         float y2 = top + 45F;
 
-        Color backgroundColor = new Color(251, 252, 253);
+        Color backgroundColor = new Color(43, 43, 43);
         if (HoveringUtils.isHovering(mouseX, mouseY, left, top, right, y2)) {
-            backgroundColor = new Color(244, 247, 249);
+            backgroundColor = new Color(50, 50, 50);
         }
         if (module.isEnabled()) {
-            backgroundColor = new Color(244, 247, 249, 100);
+            backgroundColor = new Color(80, 80, 80);
         }
 
-        RenderUtils.drawRoundedRectWithBorder(left, top, right, y2, 3F, backgroundColor.getRGB(), new Color(225, 230, 234).getRGB(), 0.5F);
+        RenderUtils.drawRoundedRect(left - 0.5F, top - 0.5F, right + 0.5F, y2 + 0.5F, 3F, backgroundColor.getRGB());
 
-        Fonts.font20.drawString(module.getName(), left + 15F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT + 2F, new Color(26, 27, 27).getRGB());
-        Fonts.font18.drawString(module.getDescription(), left + 15F, (top + y2) / 2 + 3F, new Color(179, 180, 180).getRGB());
+        Fonts.font20.drawString(module.getName(), left + 15F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT + 2F, new Color(255, 255, 255).getRGB());
+        Fonts.font18.drawString(module.getDescription(), left + 15F, (top + y2) / 2 + 3F, new Color(208, 208, 208).getRGB());
 
         RenderUtils.drawImage(arrow, right - 20F, (top + y2) / 2 - 5F, 10F, 10F);
     }
@@ -58,8 +58,8 @@ public class ModuleElement {
                     if (setting instanceof BooleanSetting) {
                         CategoryElement.settingElements.add(new BooleanElement((BooleanSetting) setting));
                     }
-                    if (setting instanceof TextSetting) {
-                        CategoryElement.settingElements.add(new TextElement((TextSetting) setting));
+                    if (setting instanceof NoteSetting) {
+                        CategoryElement.settingElements.add(new NoteElement((NoteSetting) setting));
                     }
                     if (setting instanceof NumberSetting) {
                         CategoryElement.settingElements.add(new NumberElement((NumberSetting) setting));
