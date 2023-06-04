@@ -39,7 +39,9 @@ public class CategoryElement {
             RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(45, 45, 45).getRGB());
         }
 
-        handleScrolling(wheel);
+        if (HoveringUtils.isHovering(mouseX, mouseY, x2 + 30F, 120F, right - 30F, 420F)) {
+            handleScrolling(wheel);
+        }
 
         if (category == Category.selectedCategory) {
             RenderUtils.drawRoundedRect(x1, top, x2, y2, 6F, new Color(45, 45, 45).getRGB());

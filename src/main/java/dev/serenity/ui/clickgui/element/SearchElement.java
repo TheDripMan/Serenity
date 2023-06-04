@@ -67,6 +67,22 @@ public class SearchElement {
             }
 
         }
+
+        if (searched) {
+            if (Category.selectedCategory == null) {
+                setPosition(355, 120, 520, 140);
+                searchBox.xPosition = left + 7;
+                searchBox.yPosition = (top + bottom) / 2 - 5;
+            } else {
+                setPosition(160, 150, 325, 170);
+
+                searched = false;
+                Module.selectedModule = null;
+                searchBox.xPosition = left + 7;
+                searchBox.yPosition = (top + bottom) / 2 - 5;
+            }
+
+        }
     }
 
     public void handleMouseClick(int mouseX, int mouseY, int mouseButton, float width, float height, ArrayList<CategoryElement> categoryElements) {
