@@ -75,11 +75,11 @@ public class SearchElement {
                 searchBox.yPosition = (top + bottom) / 2 - 5;
             } else {
                 setPosition(160, 150, 325, 170);
+                searchBox.xPosition = left + 7;
+                searchBox.yPosition = (top + bottom) / 2 - 5;
 
                 searched = false;
                 Module.selectedModule = null;
-                searchBox.xPosition = left + 7;
-                searchBox.yPosition = (top + bottom) / 2 - 5;
             }
 
         }
