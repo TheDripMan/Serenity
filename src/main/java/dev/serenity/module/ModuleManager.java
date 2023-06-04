@@ -1,5 +1,6 @@
 package dev.serenity.module;
 
+import dev.serenity.module.impl.combat.KillAura;
 import dev.serenity.module.impl.combat.Velocity;
 import dev.serenity.module.impl.movement.Speed;
 import dev.serenity.module.impl.movement.Sprint;
@@ -25,6 +26,7 @@ public class ModuleManager {
         modules.add(new Fullbright());
         modules.add(new Speed());
         modules.add(new Velocity());
+        modules.add(new KillAura());
     }
 
     public <T extends Module> T getModule(Class<T> module) {
