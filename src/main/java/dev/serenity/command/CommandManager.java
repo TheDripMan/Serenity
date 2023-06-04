@@ -1,6 +1,7 @@
-package dev.serenity.module;
+package dev.serenity.command;
 
 import dev.serenity.command.Command;
+import dev.serenity.command.impl.Bind;
 import dev.serenity.command.impl.Clientname;
 import dev.serenity.command.impl.Toggle;
 import dev.serenity.event.impl.ChatEvent;
@@ -27,6 +28,7 @@ public class CommandManager {
     public void init() {
         commands.add(new Toggle());
         commands.add(new Clientname());
+        commands.add(new Bind());
     }
 
     public void handle(ChatEvent event) {

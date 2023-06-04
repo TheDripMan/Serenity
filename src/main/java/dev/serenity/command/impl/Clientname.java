@@ -12,7 +12,11 @@ public class Clientname extends Command {
 
     @Override
     public void onExecute(String[] args) {
-        if(args.length <= 0) return;
+        if(args.length <= 0)
+        {
+            ChatUtils.addMessage("Syntax: " + this.getSyntax());
+            return;
+        }
         String name = "";
         for(String s : args) {
             name += s + " ";

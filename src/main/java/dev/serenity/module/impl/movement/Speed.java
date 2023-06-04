@@ -25,6 +25,16 @@ public class Speed extends Module {
     }
 
     @Override
+    public void onDisable() {
+        switch (mode.getCurrentMode()) {
+            case "Legit": {
+                mc.gameSettings.keyBindJump.setPressed(Keyboard.isKeyDown(Keyboard.KEY_SPACE));
+                break;
+            }
+        }
+    }
+
+    @Override
     public String getSuffix() {
         return mode.getCurrentMode();
     }

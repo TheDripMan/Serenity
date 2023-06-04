@@ -9,6 +9,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Command {
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getSyntax() {
+        return syntax;
+    }
+
+    public List<String> getAlias() {
+        return alias;
+    }
+
     private final String name, description, syntax;
     public List<String> alias = new ArrayList<>();
 

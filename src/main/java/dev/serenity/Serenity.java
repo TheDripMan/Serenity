@@ -1,6 +1,6 @@
 package dev.serenity;
 
-import dev.serenity.module.CommandManager;
+import dev.serenity.command.CommandManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
 
