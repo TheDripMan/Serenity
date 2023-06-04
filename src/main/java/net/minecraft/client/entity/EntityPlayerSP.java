@@ -1,8 +1,6 @@
 package net.minecraft.client.entity;
 
-import dev.serenity.event.impl.PostMotionEvent;
-import dev.serenity.event.impl.PreMotionEvent;
-import dev.serenity.event.impl.UpdateEvent;
+import dev.serenity.event.impl.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -289,6 +287,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void sendChatMessage(String message)
     {
+        final ChatEvent event = new ChatEvent(message);
+        event.call();
+        if(event.isCancelled())
+            return;
         this.sendQueue.addToSendQueue(new C01PacketChatMessage(message));
     }
 

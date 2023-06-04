@@ -59,6 +59,9 @@ public class EventHandler {
                     module.onPacket(event);
                 }
             }
+        } else if (e instanceof  ChatEvent) {
+            final ChatEvent event = ((ChatEvent) e);
+            Serenity.getInstance().getCommandManager().handle(event);
         }
     }
 }

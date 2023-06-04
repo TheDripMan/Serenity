@@ -1,5 +1,6 @@
 package dev.serenity;
 
+import dev.serenity.module.CommandManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
 
@@ -8,6 +9,7 @@ public class Serenity {
     private final String name = "Serenity";
     private final double version = 1.0;
     private final ModuleManager moduleManager = new ModuleManager();
+    private final CommandManager commandManager = new CommandManager();
     private final HUD hud = new HUD();
 
     public void startClient() {
@@ -32,6 +34,10 @@ public class Serenity {
 
     public ModuleManager getModuleManager() {
         return moduleManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public HUD getHud() {

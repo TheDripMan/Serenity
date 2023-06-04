@@ -38,7 +38,7 @@ public class ModuleManager {
 
     public Module getModule(String module) {
         for (Module m : modules) {
-            if (module.equals(m.getName())) {
+            if (module.equalsIgnoreCase(m.getName())) {
                 return m;
             }
         }
