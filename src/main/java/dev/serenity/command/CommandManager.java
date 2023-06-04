@@ -1,6 +1,7 @@
 package dev.serenity.module;
 
 import dev.serenity.command.Command;
+import dev.serenity.command.impl.Clientname;
 import dev.serenity.command.impl.Toggle;
 import dev.serenity.event.impl.ChatEvent;
 import dev.serenity.module.impl.combat.Velocity;
@@ -25,6 +26,7 @@ public class CommandManager {
 
     public void init() {
         commands.add(new Toggle());
+        commands.add(new Clientname());
     }
 
     public void handle(ChatEvent event) {

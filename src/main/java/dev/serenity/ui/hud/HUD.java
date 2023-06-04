@@ -25,8 +25,10 @@ public class HUD extends MinecraftInstance {
         }
 
         int color = ColorUtils.getRainbow(4, 0.4f, 1f, 0);
-        Fonts.minecraftFont.drawStringWithShadow("S", 3.0f, 3.0f, color);
-        Fonts.minecraftFont.drawStringWithShadow("erenity " + EnumChatFormatting.GRAY + "[" + EnumChatFormatting.WHITE + "1.8.x" + EnumChatFormatting.GRAY + "] " + EnumChatFormatting.GRAY + "[" + EnumChatFormatting.WHITE + Minecraft.getDebugFPS() + " FPS" + EnumChatFormatting.GRAY + "]", 3 + Fonts.minecraftFont.getStringWidth("S"), 3.0f, Color.WHITE.getRGB());
+        String clientName = Serenity.getInstance().getName();
+        Fonts.minecraftFont.drawStringWithShadow(clientName.substring(0,1), 3.0f, 3.0f, color);
+        if(clientName.length() > 1)
+            Fonts.minecraftFont.drawStringWithShadow(clientName.substring(1) + " " + EnumChatFormatting.GRAY + "[" + EnumChatFormatting.WHITE + "1.8.x" + EnumChatFormatting.GRAY + "] " + EnumChatFormatting.GRAY + "[" + EnumChatFormatting.WHITE + Minecraft.getDebugFPS() + " FPS" + EnumChatFormatting.GRAY + "]", 3 + Fonts.minecraftFont.getStringWidth("S"), 3.0f, Color.WHITE.getRGB());
 
         int y = 2;
         final List<Module> modules = new CopyOnWriteArrayList<>();

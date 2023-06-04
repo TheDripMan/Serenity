@@ -6,7 +6,7 @@ import dev.serenity.ui.hud.HUD;
 
 public class Serenity {
     private static final Serenity instance = new Serenity();
-    private final String name = "Serenity";
+    private String name = "Serenity";
     private final double version = 1.0;
     private final ModuleManager moduleManager = new ModuleManager();
     private final CommandManager commandManager = new CommandManager();
@@ -26,6 +26,10 @@ public class Serenity {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getVersion() {
