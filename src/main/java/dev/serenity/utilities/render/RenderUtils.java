@@ -1,5 +1,6 @@
 package dev.serenity.utilities.render;
 
+import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.MinecraftInstance;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -193,10 +194,10 @@ public class RenderUtils extends MinecraftInstance {
             paramYEnd = z;
         }
 
-        double x1 = (double)(paramXStart + radius);
-        double y1 = (double)(paramYStart + radius);
-        double x2 = (double)(paramXEnd - radius);
-        double y2 = (double)(paramYEnd - radius);
+        double x1 = (paramXStart + radius);
+        double y1 = paramYStart + radius;
+        double x2 = (paramXEnd - radius);
+        double y2 = (paramYEnd - radius);
 
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(1);
@@ -216,4 +217,29 @@ public class RenderUtils extends MinecraftInstance {
         glDisable(GL_LINE_SMOOTH);
     }
 
+    public static void drawPlayerAvatar(float left, float top, float bottom) {
+        Stencil.write(true);
+        RenderUtils.drawFilledCircle(left + 35F, top + 45F, 25F, new Color(45, 45, 45));
+        Stencil.erase(true);
+        if (mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID()) != null) {
+            final ResourceLocation skin = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID()).getLocationSkin();
+            glPushMatrix();
+            glTranslatef(40F, 55F, 0F);
+            glDisable(GL_DEPTH_TEST);
+            glEnable(GL_BLEND);
+            glDepthMask(false);
+            OpenGlHelper.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+            glColor4f(1f, 1f, 1f, 1f);
+            mc.getTextureManager().bindTexture(skin);
+            Gui.drawScaledCustomSizeModalRect(left - 30F, top - 35F, 8F, 8F, 8, 8, 50, 50,
+                    64F, 64F);
+            glDepthMask(true);
+            glDisable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+            glPopMatrix();
+        }
+        Stencil.dispose();
+
+        Fonts.fontBold30.drawString(mc.thePlayer.getGameProfile().getName(), left + 65F, (top + bottom) / 2F - Fonts.fontBold30.FONT_HEIGHT / 2F + 2F , new Color(255, 255, 255).getRGB());
+    }
 }
