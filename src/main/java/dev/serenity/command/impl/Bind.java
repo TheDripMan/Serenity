@@ -3,11 +3,8 @@ package dev.serenity.command.impl;
 import dev.serenity.Serenity;
 import dev.serenity.command.Command;
 import dev.serenity.module.Module;
-import dev.serenity.module.ModuleManager;
 import dev.serenity.utilities.other.ChatUtils;
 import org.lwjgl.input.Keyboard;
-
-import java.util.Locale;
 
 public class Bind extends Command {
     public Bind() {

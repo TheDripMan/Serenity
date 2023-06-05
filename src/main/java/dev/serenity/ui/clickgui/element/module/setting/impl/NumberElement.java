@@ -3,6 +3,7 @@ package dev.serenity.ui.clickgui.element.module.setting.impl;
 import dev.serenity.setting.impl.NumberSetting;
 import dev.serenity.ui.clickgui.element.module.setting.SettingElement;
 import dev.serenity.ui.font.Fonts;
+import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.other.HoveringUtils;
 import dev.serenity.utilities.render.RenderUtils;
 import org.lwjgl.input.Mouse;
@@ -32,17 +33,17 @@ public class NumberElement extends SettingElement {
 
         float startX = right - 150F;
         float endX = right - 30F;
-        float range = (endX - startX) / (numberSetting.getMaximum() - numberSetting.getMinimum() + 1F);
+        float range = (endX - startX) / ((numberSetting.getMaximum() - numberSetting.getMinimum()) / numberSetting.getIncrement());
 
         if (Mouse.isButtonDown(0)) {
-            for (float i = numberSetting.getMinimum(); i <= numberSetting.getMaximum(); i += numberSetting.getIncrement()) {
-                if (HoveringUtils.isHovering(mouseX, mouseY, (startX + range * i) - 7F, (top + y2) / 2 - 7F, (startX + range * i) + 7F, (top + y2) / 2 + 7F)) {
-                    numberSetting.setValue(i);
+            for (float i = startX; i < endX; i += range) {
+                if (HoveringUtils.isHovering(mouseX, mouseY, i - 7F, (top + y2) / 2F - 7F, i + 7F, (top + y2) / 2 + 7F)) {
+                    numberSetting.setValue(MathUtils.round((numberSetting.getIncrement() * (i - startX)) / range + numberSetting.getMinimum(), numberSetting.getIncrement()));
                 }
             }
         }
 
-        float currentPosX = startX + range * numberSetting.getValue() - 7/2F;
+        float currentPosX = startX + ((numberSetting.getValue() - numberSetting.getMinimum()) / numberSetting.getIncrement()) * range;
 
         String text;
         if ((int) numberSetting.getValue() == numberSetting.getValue()) {

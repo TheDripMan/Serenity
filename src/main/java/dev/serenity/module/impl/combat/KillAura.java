@@ -27,14 +27,14 @@ public class KillAura extends Module {
     private final TimerUtils timer = new TimerUtils();
     public static EntityLivingBase target;
 
-    private final NumberSetting range = new NumberSetting("Range",3.8f,2.0f,5.0f,0.05f,this);
+    private final NumberSetting range = new NumberSetting("Range",5,2.0f,5.0f,0.05f,this);
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
 
 
     public KillAura() {
-        super("KillAura", "attacks niggas", Category.COMBAT, Keyboard.KEY_R, false);
+        super("KillAura", "Attacks niggas.", Category.COMBAT, Keyboard.KEY_R, false);
     }
 
     @Override
