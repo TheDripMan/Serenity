@@ -9,8 +9,7 @@ import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import org.lwjgl.input.Keyboard;
 
 public class Velocity extends Module {
-    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Cancel", "Reverse"}, "Cancel", this);
-
+    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Cancel"}, "Cancel", this);
     public Velocity() {
         super("Velocity", "Allows you to modify the amount of knockback you take.", Category.COMBAT, Keyboard.KEY_NONE, false);
     }
@@ -26,10 +25,6 @@ public class Velocity extends Module {
                 switch (mode.getCurrentMode()) {
                     case "Cancel": {
                         event.cancelEvent();
-                        break;
-                    }
-                    case "Reverse": {
-
                         break;
                     }
                 }
