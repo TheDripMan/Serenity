@@ -62,6 +62,22 @@ public class EventHandler {
         } else if (e instanceof  ChatEvent) {
             final ChatEvent event = ((ChatEvent) e);
             Serenity.getInstance().getCommandManager().handle(event);
+        } else if (e instanceof SlowDownEvent) {
+            final SlowDownEvent event = ((SlowDownEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onSlowDown(event);
+                }
+            }
+        } else if (e instanceof SprintEvent) {
+            final SprintEvent event = ((SprintEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onSprint(event);
+                }
+            }
         }
     }
 }

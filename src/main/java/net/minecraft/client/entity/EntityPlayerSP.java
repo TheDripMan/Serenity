@@ -1,6 +1,7 @@
 package net.minecraft.client.entity;
 
 import dev.serenity.event.impl.*;
+import dev.serenity.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -173,8 +174,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     {
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
         {
-            if (this == Minecraft.getMinecraft().thePlayer) new UpdateEvent().call();
-
+            new UpdateEvent().call();
             super.onUpdate();
 
             if (this.isRiding())
@@ -193,10 +193,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * called every tick when the player is on foot. Performs all the things that normally happen during movement.
      */
     public void onUpdateWalkingPlayer() {
-        final PreMotionEvent preMotionEvent = new PreMotionEvent(this.rotationYaw, this.rotationPitch, this.onGround, this.posX, this.getEntityBoundingBox().minY, this.posZ);
-        preMotionEvent.call();
+        SprintEvent sprintEvent = new SprintEvent(isSprinting());
+        sprintEvent.call();
 
-        boolean flag = this.isSprinting();
+        boolean flag = sprintEvent.isSprinting();
 
         if (flag != serverSprintState) {
             if (flag) {
@@ -221,6 +221,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
         }
 
         if (this.isCurrentViewEntity()) {
+            final PreMotionEvent preMotionEvent = new PreMotionEvent(this.rotationYaw, this.rotationPitch, this.onGround, this.posX, this.getEntityBoundingBox().minY, this.posZ);
+            preMotionEvent.call();
             double d0 = this.posX - this.lastReportedPosX;
             double d1 = this.getEntityBoundingBox().minY - this.lastReportedPosY;
             double d2 = this.posZ - this.lastReportedPosZ;
@@ -257,10 +259,11 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 this.lastReportedYaw = preMotionEvent.getYaw();
                 this.lastReportedPitch = preMotionEvent.getPitch();
             }
-        }
 
-        final PostMotionEvent eventPostMotionUpdate = new PostMotionEvent();
-        eventPostMotionUpdate.call();
+
+            final PostMotionEvent eventPostMotionUpdate = new PostMotionEvent();
+            eventPostMotionUpdate.call();
+        }
     }
 
     /**
@@ -786,10 +789,12 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag2 = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
-        if (this.isUsingItem() && !this.isRiding())
-        {
-            this.movementInput.moveStrafe *= 0.2F;
-            this.movementInput.moveForward *= 0.2F;
+        if (getHeldItem() != null && getHeldItem().getItem() != null && (this.isUsingItem() || KillAura.blocking) && !this.isRiding()) {
+            SlowDownEvent slowDownEvent = new SlowDownEvent(0.2f, 0.2f);
+            slowDownEvent.call();
+
+            this.movementInput.moveStrafe *= slowDownEvent.getStrafe();
+            this.movementInput.moveForward *= slowDownEvent.getForward();
             this.sprintToggleTimer = 0;
         }
 

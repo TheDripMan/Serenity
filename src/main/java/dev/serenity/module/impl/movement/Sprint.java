@@ -1,5 +1,7 @@
 package dev.serenity.module.impl.movement;
 
+import dev.serenity.event.impl.PreMotionEvent;
+import dev.serenity.event.impl.SprintEvent;
 import dev.serenity.event.impl.UpdateEvent;
 import dev.serenity.module.Category;
 import dev.serenity.module.Module;
@@ -19,7 +21,11 @@ public class Sprint extends Module {
     }
 
     @Override
-    public void onUpdate(UpdateEvent event) {
-        mc.gameSettings.keyBindSprint.setPressed(MovementUtils.isMoving());
+    public void onSprint(SprintEvent event) {
+        if (!event.isCancelled()) {
+            final boolean canSprint = MovementUtils.canSprint(mc.thePlayer);
+            mc.thePlayer.setSprinting(canSprint);
+            event.setSprinting(canSprint);
+        }
     }
 }

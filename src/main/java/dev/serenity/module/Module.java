@@ -79,4 +79,6 @@ public class Module extends MinecraftInstance {
     public void onPreMotion(final PreMotionEvent event) {}
     public void onPostMotion(final PostMotionEvent event) {}
     public void onPacket(final PacketEvent event) {}
+    public void onSlowDown(final SlowDownEvent event) {}
+    public void onSprint(final SprintEvent event) {}
 }
