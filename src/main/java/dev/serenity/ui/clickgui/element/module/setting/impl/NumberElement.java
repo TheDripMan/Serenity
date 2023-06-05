@@ -36,7 +36,7 @@ public class NumberElement extends SettingElement {
         float range = (endX - startX) / ((numberSetting.getMaximum() - numberSetting.getMinimum()) / numberSetting.getIncrement());
 
         if (Mouse.isButtonDown(0)) {
-            for (float i = startX; i < endX; i += range) {
+            for (float i = startX; i <= endX; i += range) {
                 if (HoveringUtils.isHovering(mouseX, mouseY, i - 7F, (top + y2) / 2F - 7F, i + 7F, (top + y2) / 2 + 7F)) {
                     numberSetting.setValue(MathUtils.round((numberSetting.getIncrement() * (i - startX)) / range + numberSetting.getMinimum(), numberSetting.getIncrement()));
                 }
@@ -55,7 +55,7 @@ public class NumberElement extends SettingElement {
 
         Fonts.font20.drawString(text, startX - 20F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT / 2F + 2F, new Color(180, 179, 180).getRGB());
 
-        RenderUtils.drawRoundedRect(startX + range, (top + y2) / 2F - 1F, currentPosX, (top + y2) / 2F + 1F, 1F, new Color(76, 194, 255).getRGB());
+        RenderUtils.drawRoundedRect(startX, (top + y2) / 2F - 1F, currentPosX, (top + y2) / 2F + 1F, 1F, new Color(76, 194, 255).getRGB());
         RenderUtils.drawRoundedRect(currentPosX, (top + y2) / 2F - 1F, endX, (top + y2) / 2F + 1F, 1F, new Color(159, 159, 159).getRGB());
 
         RenderUtils.drawFilledCircle(currentPosX, (top + y2) / 2F, 7F, new Color(69, 69, 69));
