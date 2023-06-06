@@ -10,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 public class Velocity extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Cancel"}, "Cancel", this);
+
     public Velocity() {
         super("Velocity", "Allows you to modify the amount of knockback you take.", Category.COMBAT, Keyboard.KEY_NONE, false);
     }

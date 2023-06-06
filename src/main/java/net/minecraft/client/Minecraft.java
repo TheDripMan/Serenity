@@ -38,6 +38,7 @@ import javax.imageio.ImageIO;
 
 import dev.serenity.Serenity;
 import dev.serenity.event.impl.KeyEvent;
+import dev.serenity.event.impl.TickEvent;
 import dev.serenity.utilities.render.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -1722,6 +1723,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public void runTick() throws IOException
     {
+        final TickEvent tickEvent = new TickEvent();
+        tickEvent.call();
+
         if (this.rightClickDelayTimer > 0)
         {
             --this.rightClickDelayTimer;
@@ -1925,8 +1929,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
-                        final KeyEvent event = new KeyEvent(k);
-                        event.call();
+                        final KeyEvent keyEvent = new KeyEvent(k);
+                        keyEvent.call();
 
                         if (k == 1)
                         {

@@ -78,6 +78,14 @@ public class EventHandler {
                     module.onSprint(event);
                 }
             }
+        } else if (e instanceof TickEvent) {
+            final TickEvent event = ((TickEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onTick(event);
+                }
+            }
         }
     }
 }
