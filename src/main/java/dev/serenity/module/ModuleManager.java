@@ -8,6 +8,7 @@ import dev.serenity.module.impl.movement.Sprint;
 import dev.serenity.module.impl.render.ClickGUI;
 import dev.serenity.module.impl.render.Fullbright;
 import dev.serenity.module.impl.render.HUD;
+import dev.serenity.module.impl.world.ChestStealer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +30,7 @@ public class ModuleManager {
         modules.add(new Velocity());
         modules.add(new KillAura());
         modules.add(new NoSlow());
+        modules.add(new ChestStealer());
     }
 
     public <T extends Module> T getModule(Class<T> module) {
