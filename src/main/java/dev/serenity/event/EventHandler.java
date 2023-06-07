@@ -70,20 +70,20 @@ public class EventHandler {
                     module.onSlowDown(event);
                 }
             }
-        } else if (e instanceof SprintEvent) {
-            final SprintEvent event = ((SprintEvent) e);
-
-            for (final Module module : modules) {
-                if (module.isEnabled()) {
-                    module.onSprint(event);
-                }
-            }
         } else if (e instanceof TickEvent) {
             final TickEvent event = ((TickEvent) e);
 
             for (final Module module : modules) {
                 if (module.isEnabled()) {
                     module.onTick(event);
+                }
+            }
+        } else if(e instanceof StrafeEvent) {
+            final StrafeEvent event = ((StrafeEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onStrafe(event);
                 }
             }
         }
