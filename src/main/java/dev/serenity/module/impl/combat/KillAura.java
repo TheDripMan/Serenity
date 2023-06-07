@@ -1,7 +1,6 @@
 package dev.serenity.module.impl.combat;
 
 import dev.serenity.event.impl.PreMotionEvent;
-import dev.serenity.event.impl.UpdateEvent;
 import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import dev.serenity.setting.impl.BooleanSetting;
@@ -9,17 +8,17 @@ import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NumberSetting;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.PacketUtils;
+import dev.serenity.utilities.player.RotationUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Comparator;
@@ -37,16 +36,38 @@ public class KillAura extends Module {
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
     private final BooleanSetting autoblock = new BooleanSetting("AutoBlock",true,this);
-
+    private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
+    private final NumberSetting yawSpeed = new NumberSetting("Yaw Speed", 360, 1, 360, 1, this);
+    private final NumberSetting pitchSpeed = new NumberSetting("Pitch Speed", 90, 1, 90, 1, this);
 
     public KillAura() {
         super("KillAura", "Attacks niggas.", Category.COMBAT, Keyboard.KEY_R, false);
     }
 
     @Override
-    public void onUpdate(UpdateEvent event) {
+    public void onDisable() {
+        unblock();
+    }
+
+    @Override
+    public void onPreMotion(PreMotionEvent event) {
         updateTargets();
         if(target != null && isValidTarget(target)) {
+            float[] rotations = getRotationsToEnt(target);
+            rotations[0] = RotationUtils.getRotation(mc.thePlayer.rotationYaw, rotations[0], yawSpeed.getValue());
+            rotations[1] = RotationUtils.getRotation(mc.thePlayer.rotationPitch, rotations[1],  pitchSpeed.getValue());
+
+            rotations[0] = Math.round(rotations[0] / RotationUtils.getSensitivityMultiplier()) * RotationUtils.getSensitivityMultiplier();
+            rotations[1] = Math.round(rotations[1] / RotationUtils.getSensitivityMultiplier()) * RotationUtils.getSensitivityMultiplier();
+
+            if (silentRotations.isEnabled()) {
+                mc.thePlayer.renderYawOffset = rotations[0];
+                mc.thePlayer.rotationYawHead = rotations[0];
+            } else {
+                mc.thePlayer.rotationYaw = rotations[0];
+                mc.thePlayer.rotationPitch = rotations[1];
+            }
+
             if(autoblock.isEnabled())
             {
                 block();
@@ -114,5 +135,19 @@ public class KillAura extends Module {
             PacketUtils.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
             blocking = false;
         }
+    }
+
+    private float[] getRotationsToEnt(Entity ent) {
+        final double differenceX = ent.posX - mc.thePlayer.posX;
+        final double differenceY = (ent.posY + ent.height) - (mc.thePlayer.posY + mc.thePlayer.height) - 0.5;
+        final double differenceZ = ent.posZ - mc.thePlayer.posZ;
+        final float rotationYaw = (float) (Math.atan2(differenceZ, differenceX) * 180.0D / Math.PI) - 90.0f;
+        final float rotationPitch = (float) (Math.atan2(differenceY, mc.thePlayer.getDistanceToEntity(ent)) * 180.0D
+                / Math.PI);
+        final float finishedYaw = mc.thePlayer.rotationYaw
+                + MathHelper.wrapAngleTo180_float(rotationYaw - mc.thePlayer.rotationYaw);
+        final float finishedPitch = mc.thePlayer.rotationPitch
+                + MathHelper.wrapAngleTo180_float(rotationPitch - mc.thePlayer.rotationPitch);
+        return new float[]{finishedYaw, -MathHelper.clamp_float(finishedPitch, -90, 90)};
     }
 }
