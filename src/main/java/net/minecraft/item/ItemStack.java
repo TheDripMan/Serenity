@@ -107,6 +107,10 @@ public final class ItemStack
         return itemstack.getItem() != null ? itemstack : null;
     }
 
+    public int getStackSize() {
+        return stackSize;
+    }
+
     private ItemStack()
     {
         this.canDestroyCacheBlock = null;
