@@ -28,6 +28,8 @@ public class NumberSetting extends Setting {
         this.canDisplay = displayable;
     }
 
+    public void set() {}
+
     public float getValue() {
         return value;
     }
@@ -46,6 +48,7 @@ public class NumberSetting extends Setting {
 
     public void setValue(float value) {
         this.value = value;
+        set();
     }
 
     public void setMinimum(float minimum) {

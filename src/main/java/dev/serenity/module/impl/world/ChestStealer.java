@@ -5,6 +5,7 @@ import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.NumberSetting;
+import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.ItemUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -13,12 +14,27 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 public class ChestStealer extends Module {
-    private final TimerUtils stopwatch = new TimerUtils();
+    private final TimerUtils timer = new TimerUtils();
     private long nextClick;
     private int lastClick;
     private int lastSteal;
 
-    private final NumberSetting delay = new NumberSetting("Delay", 100, 50, 500, 25, this);
+    private final NumberSetting minDelay = new NumberSetting("Min Delay", 100, 50, 500, 25, this) {
+        @Override
+        public void set() {
+            if (minDelay.getValue() > maxDelay.getValue()) {
+                minDelay.setValue(maxDelay.getValue());
+            }
+        }
+    };
+    private final NumberSetting maxDelay = new NumberSetting("Max Delay", 150, 50, 500, 25, this) {
+        @Override
+        public void set() {
+            if (maxDelay.getValue() < minDelay.getValue()) {
+                maxDelay.setValue(minDelay.getValue());
+            }
+        }
+    };
     private final BooleanSetting ignoreTrash = new BooleanSetting("Ignore Trash", true, this);
 
     public ChestStealer() {
@@ -31,7 +47,7 @@ public class ChestStealer extends Module {
         if (mc.currentScreen instanceof GuiChest) {
             final ContainerChest container = (ContainerChest) mc.thePlayer.openContainer;
 
-            if (!this.stopwatch.hasPassed(this.nextClick, true)) {
+            if (!this.timer.hasPassed(this.nextClick, true)) {
                 return;
             }
 
@@ -48,7 +64,7 @@ public class ChestStealer extends Module {
                     continue;
                 }
 
-                this.nextClick = Math.round(this.delay.getValue());
+                this.nextClick = Math.round(MathUtils.getRandom(this.minDelay.getValue(), this.maxDelay.getValue()));
                 mc.playerController.windowClick(container.windowId, i, 0, 1, mc.thePlayer);
                 this.lastClick = 0;
                 return;
