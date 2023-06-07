@@ -10,11 +10,11 @@ public class MathUtils {
         return Math.round(value * precision) / precision;
     }
 
-    public static double getRandom(double min, double max) {
+    public static double getRandom(float min, float max) {
         if (min == max) {
             return min;
         } else if (min > max) {
-            final double d = min;
+            final float d = min;
             min = max;
             max = d;
         }

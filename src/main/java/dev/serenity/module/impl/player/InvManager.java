@@ -7,6 +7,7 @@ import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
+import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockSlime;
@@ -26,7 +27,6 @@ import net.minecraft.util.DamageSource;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class InvManager extends Module {
     private final NoteSetting modeSettings = new NoteSetting("Mode Settings", this);
@@ -72,8 +72,8 @@ public class InvManager extends Module {
 
     private boolean changingSettings;
 
-    private final TimerUtils timer = new TimerUtils();
-    private Integer delay = null;
+    private TimerUtils timer;
+    private long delay;
     private boolean movedItem;
     private boolean inventoryOpen;
     private int ticksSinceChest;
@@ -84,7 +84,7 @@ public class InvManager extends Module {
 
     @Override
     public void onEnable() {
-        timer.reset();
+        timer = new TimerUtils();
     }
 
     @Override
@@ -104,26 +104,18 @@ public class InvManager extends Module {
             return;
         }
 
-//        if (this.getModule(Scaffold.class).isEnabled() || mc.thePlayer.isSwingInProgress) {
-//            return;
-//        }
-
-        if (delay == null) {
-            delay = RandomUtil.randomRange((int) minDelay.getValue(), (int) maxDelay.getValue());
+        if (mc.thePlayer.isSwingInProgress) {
+            return;
         }
 
-        if (!timer.hasReached(delay)) {
-//            if (mode.is("Legit")) {
-//                closeInventoryIfNecessary();
-//            }
+        delay = Math.round(MathUtils.getRandom(minDelay.getValue(), maxDelay.getValue()));
+
+        if (!timer.hasPassed(delay, true)) {
             return;
         }
 
         movedItem = false;
-        timer.reset();
-        delay = RandomUtil.randomRange((int) minDelay.getValue(), (int) maxDelay.getValue());
 
-        /* Allows the mode of the manager to function */
         switch (mode.getCurrentMode()) {
             case "Open Inventory":
                 if (!(mc.currentScreen instanceof GuiInventory)) return;
@@ -133,7 +125,6 @@ public class InvManager extends Module {
         player = mc.thePlayer;
         playerController = mc.playerController;
 
-        /* Looping through all inventory slots to remove unwhitelisted or blacklisted items */
         if (throwUselessItems.isEnabled()) {
             for (int i = 0; i < INVENTORY_SLOTS; ++i) {
                 final ItemStack itemStack = player.inventory.getStackInSlot(i);
@@ -168,28 +159,24 @@ public class InvManager extends Module {
                 final ItemArmor armor = (ItemArmor) item;
                 final int damageReductionItem = getArmorDamageReduction(itemStack);
 
-                /* Helmet */
                 if (armor.armorType == 0) {
                     if (bestHelmet == null || damageReductionItem > getArmorDamageReduction(player.inventory.getStackInSlot(bestHelmet))) {
                         bestHelmet = i;
                     }
                 }
 
-                /* Chestplate */
                 if (armor.armorType == 1) {
                     if (bestChestPlate == null || damageReductionItem > getArmorDamageReduction(player.inventory.getStackInSlot(bestChestPlate))) {
                         bestChestPlate = i;
                     }
                 }
 
-                /* Leggings */
                 if (armor.armorType == 2) {
                     if (bestLeggings == null || damageReductionItem > getArmorDamageReduction(player.inventory.getStackInSlot(bestLeggings))) {
                         bestLeggings = i;
                     }
                 }
 
-                /* Boots */
                 if (armor.armorType == 3) {
                     if (bestBoots == null || damageReductionItem > getArmorDamageReduction(player.inventory.getStackInSlot(bestBoots))) {
                         bestBoots = i;
@@ -198,7 +185,6 @@ public class InvManager extends Module {
 
             }
 
-            /* Sword */
             if (item instanceof ItemSword) {
                 final float damage = getSwordDamage(itemStack);
                 if (bestSword == null || damage > getSwordDamage(player.inventory.getStackInSlot(bestSword))) {
@@ -206,7 +192,6 @@ public class InvManager extends Module {
                 }
             }
 
-            /* Pickaxe */
             if (item instanceof ItemPickaxe) {
                 final float mineSpeed = getMineSpeed(itemStack);
                 if (bestPickaxe == null || mineSpeed > getMineSpeed(player.inventory.getStackInSlot(bestPickaxe))) {
@@ -214,7 +199,6 @@ public class InvManager extends Module {
                 }
             }
 
-            /* Axe */
             if (item instanceof ItemAxe) {
                 final float mineSpeed = getMineSpeed(itemStack);
                 if (bestAxe == null || mineSpeed > getMineSpeed(player.inventory.getStackInSlot(bestAxe))) {
@@ -222,7 +206,6 @@ public class InvManager extends Module {
                 }
             }
 
-            /* Spade */
             if (item instanceof ItemSpade) {
                 final float mineSpeed = getMineSpeed(itemStack);
                 if (bestShovel == null || mineSpeed > getMineSpeed(player.inventory.getStackInSlot(bestShovel))) {
@@ -230,7 +213,6 @@ public class InvManager extends Module {
                 }
             }
 
-            /* Blocks */
             if (item instanceof ItemBlock && ((ItemBlock) item).getBlock().isFullCube()) {
                 final float amountOfBlocks = itemStack.getStackSize();
                 if (bestBlock == null || amountOfBlocks > player.inventory.getStackInSlot(bestBlock).getStackSize()) {
@@ -238,7 +220,6 @@ public class InvManager extends Module {
                 }
             }
 
-            /* Potions */
             if (item instanceof ItemPotion) {
                 final ItemPotion itemPotion = (ItemPotion) item;
                 if (bestPotion == null && ItemPotion.isSplash(itemStack.getMetadata()) && itemPotion.getEffects(itemStack.getMetadata()) != null) {
@@ -261,13 +242,12 @@ public class InvManager extends Module {
                         add(16);
                     }};
 
-                    if (!isPotionActive && (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6) && mc.thePlayer.getHealth() < ((NumberSetting) Objects.requireNonNull(Rise.INSTANCE.getModuleManager().getSetting("AutoPot", "Health"))).getValue()))
+                    if (!isPotionActive && (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6) && mc.thePlayer.getHealth() < 15))
                         bestPotion = i;
                 }
             }
         }
 
-        /* Throws away armor that isn't considered the best */
         if (throwUselessItems.isEnabled()) {
             for (int i = 0; i < INVENTORY_SLOTS; ++i) {
                 final ItemStack itemStack = player.inventory.getStackInSlot(i);
@@ -276,7 +256,6 @@ public class InvManager extends Module {
 
                 final Item item = itemStack.getItem();
 
-                /* Throws Useless armor */
                 if (item instanceof ItemArmor) {
                     final ItemArmor armor = (ItemArmor) item;
 
@@ -289,28 +268,24 @@ public class InvManager extends Module {
 
                 }
 
-                /* Throws useless swords */
                 if (item instanceof ItemSword) {
                     if (bestSword != null && i != bestSword) {
                         throwItem(getSlotId(i));
                     }
                 }
 
-                /* Throws useless pickaxes */
                 if (item instanceof ItemPickaxe) {
                     if (bestPickaxe != null && i != bestPickaxe) {
                         throwItem(getSlotId(i));
                     }
                 }
 
-                /* Throws useless axes */
                 if (item instanceof ItemAxe) {
                     if (bestAxe != null && i != bestAxe) {
                         throwItem(getSlotId(i));
                     }
                 }
 
-                /* Throws useless shovels */
                 if (item instanceof ItemSpade) {
                     if (bestShovel != null && i != bestShovel) {
                         throwItem(getSlotId(i));
@@ -319,7 +294,6 @@ public class InvManager extends Module {
             }
         }
 
-        /* Equips best armor and tools if enabled */
         if (equipBestGear.isEnabled()) {
             if (bestHelmet != null) equipArmor(getSlotId(bestHelmet));
             if (bestChestPlate != null) equipArmor(getSlotId(bestChestPlate));
@@ -353,7 +327,6 @@ public class InvManager extends Module {
             }
         }
 
-        /* Allows the mode of the manager to function */
         switch (mode.getCurrentMode()) {
             case "Packet Spam":
                 closeInventoryIfNecessary();
@@ -518,7 +491,6 @@ public class InvManager extends Module {
         final Item item = itemStack.getItem();
         int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, itemStack);
 
-        //Percentage of Efficiency per Level
         switch (level) {
             case 1:
                 level = 30;
