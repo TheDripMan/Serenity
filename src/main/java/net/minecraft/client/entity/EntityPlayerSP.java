@@ -193,10 +193,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * called every tick when the player is on foot. Performs all the things that normally happen during movement.
      */
     public void onUpdateWalkingPlayer() {
-        SprintEvent sprintEvent = new SprintEvent(isSprinting());
-        sprintEvent.call();
-
-        boolean flag = sprintEvent.isSprinting();
+        boolean flag = isSprinting();
 
         if (flag != serverSprintState) {
             if (flag) {
@@ -226,8 +223,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
             double d0 = this.posX - this.lastReportedPosX;
             double d1 = this.getEntityBoundingBox().minY - this.lastReportedPosY;
             double d2 = this.posZ - this.lastReportedPosZ;
-            double d3 = (double) (preMotionEvent.getYaw() - this.lastReportedYaw);
-            double d4 = (double) (preMotionEvent.getPitch() - this.lastReportedPitch);
+            double d3 = preMotionEvent.getYaw() - this.lastReportedYaw;
+            double d4 = preMotionEvent.getPitch() - this.lastReportedPitch;
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > (9.0E-4D) || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 

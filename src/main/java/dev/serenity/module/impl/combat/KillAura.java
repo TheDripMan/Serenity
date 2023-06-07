@@ -61,8 +61,8 @@ public class KillAura extends Module {
             rotations[1] = Math.round(rotations[1] / RotationUtils.getSensitivityMultiplier()) * RotationUtils.getSensitivityMultiplier();
 
             if (silentRotations.isEnabled()) {
-                mc.thePlayer.renderYawOffset = rotations[0];
-                mc.thePlayer.rotationYawHead = rotations[0];
+                event.setYaw(rotations[0]);
+                event.setPitch(rotations[1]);
             } else {
                 mc.thePlayer.rotationYaw = rotations[0];
                 mc.thePlayer.rotationPitch = rotations[1];
