@@ -35,7 +35,7 @@ public class KillAura extends Module {
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
-    private final BooleanSetting autoblock = new BooleanSetting("AutoBlock",true,this);
+    private final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Grim"}, "Fake",this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
     private final NumberSetting yawSpeed = new NumberSetting("Yaw Speed", 360, 1, 360, 1, this);
     private final NumberSetting pitchSpeed = new NumberSetting("Pitch Speed", 90, 1, 90, 1, this);
@@ -68,13 +68,10 @@ public class KillAura extends Module {
                 mc.thePlayer.rotationPitch = rotations[1];
             }
 
-            if(autoblock.isEnabled())
-            {
-                block();
-            }
             if(timer.hasPassed(100, true)) {
                 mc.thePlayer.swingItem();
                 PacketUtils.sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+                block();
             }
         } else unblock();
     }
@@ -119,21 +116,31 @@ public class KillAura extends Module {
 
     private void block()
     {
-        if(!isHoldingSword())
-            return;
-        mc.thePlayer.setItemInUse(mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.getCurrentItem().getMaxItemUseDuration());
-        if (!blocking) {
-            PacketUtils.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+        if (!blockMode.getCurrentMode().equals("None")) {
+            if(!isHoldingSword())
+                return;
+            mc.thePlayer.setItemInUse(mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.getCurrentItem().getMaxItemUseDuration());
             blocking = true;
+            switch (blockMode.getCurrentMode()) {
+                case "Grim": {
+                    PacketUtils.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+                    break;
+                }
+            }
         }
     }
 
     private void unblock()
     {
-        if (blocking) {
-            mc.playerController.onStoppedUsingItem(mc.thePlayer);
-            PacketUtils.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+        if (!blockMode.getCurrentMode().equals("None")) {
             blocking = false;
+            switch (blockMode.getCurrentMode()) {
+                case "Grim": {
+                    mc.playerController.onStoppedUsingItem(mc.thePlayer);
+                    PacketUtils.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                    break;
+                }
+            }
         }
     }
 

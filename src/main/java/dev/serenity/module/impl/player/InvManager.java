@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class InvManager extends Module {
     private final NoteSetting modeSettings = new NoteSetting("Mode Settings", this);
-    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"None", "Legit", "Open Inventory", "Packet", "Packet Spam"}, "None", this);
+    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"None", "Open Inventory", "Packet", "Packet Spam"}, "None", this);
 
     private final NoteSetting bypassSettings = new NoteSetting("Bypass Settings", this);
     private final NumberSetting minDelay = new NumberSetting("Min Delay", 100, 0, 1000, 25, this) {
@@ -371,9 +371,6 @@ public class InvManager extends Module {
                 switch (mode.getCurrentMode()) {
                     case "Packet Spam":
                     case "Packet":
-                    case "Legit":
-                        openInventoryIfNecessary();
-                        break;
                 }
                 playerController.windowClick(player.inventoryContainer.windowId, slot, 1, 4, player);
                 movedItem = true;
@@ -388,9 +385,6 @@ public class InvManager extends Module {
                 switch (mode.getCurrentMode()) {
                     case "Packet Spam":
                     case "Packet":
-                    case "Legit":
-                        openInventoryIfNecessary();
-                        break;
                 }
                 playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, slot, newSlot, 2, player);
                 movedItem = true;
@@ -405,9 +399,6 @@ public class InvManager extends Module {
                 switch (mode.getCurrentMode()) {
                     case "Packet Spam":
                     case "Packet":
-                    case "Legit":
-                        openInventoryIfNecessary();
-                        break;
                 }
                 playerController.windowClick(player.inventoryContainer.windowId, slot, 0, 1, player);
                 movedItem = true;
