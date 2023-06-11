@@ -39,6 +39,7 @@ public class Speed extends Module {
         }
     }
 
+
     @Override
     public void onStrafe(StrafeEvent event)
     {
@@ -51,6 +52,7 @@ public class Speed extends Module {
                     return;
                 }
                 MovementUtils.strafe();
+                break;
             }
         }
     }

@@ -1,5 +1,6 @@
 package net.minecraft.client.entity;
 
+import dev.serenity.Serenity;
 import dev.serenity.event.impl.*;
 import dev.serenity.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
@@ -786,7 +787,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag2 = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
-        if (getHeldItem() != null && getHeldItem().getItem() != null && (this.isUsingItem() || KillAura.blocking) && !this.isRiding()) {
+        KillAura killAura = Serenity.getInstance().getModuleManager().getModule(KillAura.class);
+
+        if (getHeldItem() != null && getHeldItem().getItem() != null && (this.isUsingItem() || (killAura.blocking && !killAura.blockMode.getCurrentMode().equals("Fake"))) && !this.isRiding()) {
             SlowDownEvent slowDownEvent = new SlowDownEvent(0.2f, 0.2f);
             slowDownEvent.call();
 

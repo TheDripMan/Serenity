@@ -1,22 +1,30 @@
 package dev.serenity.utilities.player;
 
-import dev.serenity.utilities.MinecraftInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.MathHelper;
 
-public class RotationUtils extends MinecraftInstance {
-    public static float getRotation(float from, float to, float speed) {
-        float f = MathHelper.wrapAngleTo180_float(to - from);
-        if (f > speed) {
-            f = speed;
-        }
-        if (!(f < -speed)) return from + f;
-        f = -speed;
-        return from + f;
-    }
+public class RotationUtils {
+    public static float[] getFixedRotation(final float[] rotations, final float[] lastRotations) {
+        final Minecraft mc = Minecraft.getMinecraft();
 
-    public static float getSensitivityMultiplier() {
-        float SENSITIVITY = Minecraft.getMinecraft().gameSettings.mouseSensitivity * 0.6f + 0.2f;
-        return SENSITIVITY * SENSITIVITY * SENSITIVITY * 8.0f * 0.15f;
+        final float yaw = rotations[0];
+        final float pitch = rotations[1];
+
+        final float lastYaw = lastRotations[0];
+        final float lastPitch = lastRotations[1];
+
+        final float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        final float gcd = f * f * f * 1.2F;
+
+        final float deltaYaw = yaw - lastYaw;
+        final float deltaPitch = pitch - lastPitch;
+
+        final float fixedDeltaYaw = deltaYaw - (deltaYaw % gcd);
+        final float fixedDeltaPitch = deltaPitch - (deltaPitch % gcd);
+
+        final float fixedYaw = lastYaw + fixedDeltaYaw;
+        final float fixedPitch = lastPitch + fixedDeltaPitch;
+
+        return new float[]{fixedYaw, fixedPitch};
     }
 }

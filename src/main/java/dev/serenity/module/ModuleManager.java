@@ -1,5 +1,6 @@
 package dev.serenity.module;
 
+import dev.serenity.module.impl.combat.Criticals;
 import dev.serenity.module.impl.combat.KillAura;
 import dev.serenity.module.impl.combat.Velocity;
 import dev.serenity.module.impl.movement.NoSlow;
@@ -33,6 +34,7 @@ public class ModuleManager {
         modules.add(new NoSlow());
         modules.add(new ChestStealer());
         modules.add(new InvManager());
+        modules.add(new Criticals());
     }
 
     public <T extends Module> T getModule(Class<T> module) {

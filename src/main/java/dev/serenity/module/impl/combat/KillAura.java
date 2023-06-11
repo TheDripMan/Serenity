@@ -1,23 +1,22 @@
 package dev.serenity.module.impl.combat;
 
 import dev.serenity.event.impl.PreMotionEvent;
+import dev.serenity.event.impl.UpdateEvent;
 import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NumberSetting;
+import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.PacketUtils;
 import dev.serenity.utilities.player.RotationUtils;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -28,17 +27,70 @@ import java.util.stream.Collectors;
 public class KillAura extends Module {
 
     private final TimerUtils timer = new TimerUtils();
-    public static EntityLivingBase target;
-    public static boolean blocking;
+    private EntityLivingBase target;
+    public boolean blocking;
+    public static boolean attacking = false;
+    private double targetPosX, targetPosY, targetPosZ;
+    public static float yaw, pitch, lastYaw, lastPitch, serverYaw, serverPitch;
+    private float randomYaw, randomPitch;
 
+    private final NumberSetting minCPS = new NumberSetting("Min CPS", 12, 1, 20, 1, this) {
+        @Override
+        public void set() {
+            if (minCPS.getValue() > maxCPS.getValue()) {
+                minCPS.setValue(maxCPS.getValue());
+            }
+        }
+    };
+    private final NumberSetting maxCPS = new NumberSetting("Max CPS", 15, 1, 20, 1, this) {
+        @Override
+        public void set() {
+            if (maxCPS.getValue() < minCPS.getValue()) {
+                maxCPS.setValue(minCPS.getValue());
+            }
+        }
+    };
     private final NumberSetting range = new NumberSetting("Range",5,2.0f,5.0f,0.05f,this);
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
-    private final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Grim"}, "Fake",this);
+    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Packet"}, "Fake",this);
+    private final BooleanSetting swing = new BooleanSetting("Swing", true, this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
-    private final NumberSetting yawSpeed = new NumberSetting("Yaw Speed", 360, 1, 360, 1, this);
-    private final NumberSetting pitchSpeed = new NumberSetting("Pitch Speed", 90, 1, 90, 1, this);
+    private final NumberSetting minYawRotation = new NumberSetting("Min Yaw Rot", 180, 1, 180, 0.1F, this) {
+        @Override
+        public void set() {
+            if (minYawRotation.getValue() > maxYawRotation.getValue()) {
+                minYawRotation.setValue(maxYawRotation.getValue());
+            }
+        }
+    };
+    private final NumberSetting maxYawRotation = new NumberSetting("Max Yaw Rot", 180, 1, 180, 0.1F, this) {
+        @Override
+        public void set() {
+            if (maxYawRotation.getValue() < minYawRotation.getValue()) {
+                maxYawRotation.setValue(minYawRotation.getValue());
+            }
+        }
+    };
+    private final NumberSetting minPitchRotation = new NumberSetting("Min Pitch Rot", 180, 1, 180, 0.1F, this) {
+        @Override
+        public void set() {
+            if (minPitchRotation.getValue() > maxPitchRotation.getValue()) {
+                minPitchRotation.setValue(maxPitchRotation.getValue());
+            }
+        }
+    };
+    private final NumberSetting maxPitchRotation = new NumberSetting("Max Pitch Rot", 180, 1, 180, 0.1F, this) {
+        @Override
+        public void set() {
+            if (maxPitchRotation.getValue() < minPitchRotation.getValue()) {
+                maxPitchRotation.setValue(minPitchRotation.getValue());
+            }
+        }
+    };
+    private final NumberSetting predict = new NumberSetting("Predict", 0, 0, 4, 0.1F, this);
+    private final NumberSetting random = new NumberSetting("Random", 0, 0, 18, 0.1F, this);
 
     public KillAura() {
         super("KillAura", "Attacks niggas.", Category.COMBAT, Keyboard.KEY_R, false);
@@ -47,33 +99,57 @@ public class KillAura extends Module {
     @Override
     public void onDisable() {
         unblock();
+        attacking = false;
+    }
+
+    @Override
+    public void onEnable() {
+        if (mc.thePlayer == null) {
+            return;
+        }
+
+        lastYaw = mc.thePlayer.rotationYaw;
+        lastPitch = mc.thePlayer.rotationPitch;
+        yaw = mc.thePlayer.rotationYaw;
+        pitch = mc.thePlayer.rotationPitch;
+    }
+
+    @Override
+    public void onUpdate(UpdateEvent event) {
+        if(target != null && isValidTarget(target)) {
+            targetPosX = target.posX;
+            targetPosY = target.posY;
+            targetPosZ = target.posZ;
+
+            serverYaw = yaw;
+            serverPitch = pitch;
+        }
     }
 
     @Override
     public void onPreMotion(PreMotionEvent event) {
         updateTargets();
         if(target != null && isValidTarget(target)) {
-            float[] rotations = getRotationsToEnt(target);
-            rotations[0] = RotationUtils.getRotation(mc.thePlayer.rotationYaw, rotations[0], yawSpeed.getValue());
-            rotations[1] = RotationUtils.getRotation(mc.thePlayer.rotationPitch, rotations[1],  pitchSpeed.getValue());
-
-            rotations[0] = Math.round(rotations[0] / RotationUtils.getSensitivityMultiplier()) * RotationUtils.getSensitivityMultiplier();
-            rotations[1] = Math.round(rotations[1] / RotationUtils.getSensitivityMultiplier()) * RotationUtils.getSensitivityMultiplier();
+            update();
 
             if (silentRotations.isEnabled()) {
-                event.setYaw(rotations[0]);
-                event.setPitch(rotations[1]);
+                event.setYaw(serverYaw);
+                event.setPitch(serverPitch);
             } else {
-                mc.thePlayer.rotationYaw = rotations[0];
-                mc.thePlayer.rotationPitch = rotations[1];
+                mc.thePlayer.rotationYaw = serverYaw;
+                mc.thePlayer.rotationPitch = serverPitch;
             }
 
-            if(timer.hasPassed(100, true)) {
-                mc.thePlayer.swingItem();
+            if(timer.hasPassed(1000 / Math.round(MathUtils.getRandom(minCPS.getValue(), maxCPS.getValue())), true)) {
+                attacking = true;
+                if (this.swing.isEnabled()) mc.thePlayer.swingItem();
                 PacketUtils.sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
                 block();
             }
-        } else unblock();
+        } else {
+            unblock();
+            attacking = false;
+        }
     }
 
     private void updateTargets()
@@ -122,7 +198,7 @@ public class KillAura extends Module {
             mc.thePlayer.setItemInUse(mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.getCurrentItem().getMaxItemUseDuration());
             blocking = true;
             switch (blockMode.getCurrentMode()) {
-                case "Grim": {
+                case "Packet": {
                     PacketUtils.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
                     break;
                 }
@@ -135,26 +211,91 @@ public class KillAura extends Module {
         if (!blockMode.getCurrentMode().equals("None")) {
             blocking = false;
             switch (blockMode.getCurrentMode()) {
-                case "Grim": {
-                    mc.playerController.onStoppedUsingItem(mc.thePlayer);
-                    PacketUtils.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                case "Packet": {
                     break;
                 }
             }
         }
     }
 
-    private float[] getRotationsToEnt(Entity ent) {
-        final double differenceX = ent.posX - mc.thePlayer.posX;
-        final double differenceY = (ent.posY + ent.height) - (mc.thePlayer.posY + mc.thePlayer.height) - 0.5;
-        final double differenceZ = ent.posZ - mc.thePlayer.posZ;
-        final float rotationYaw = (float) (Math.atan2(differenceZ, differenceX) * 180.0D / Math.PI) - 90.0f;
-        final float rotationPitch = (float) (Math.atan2(differenceY, mc.thePlayer.getDistanceToEntity(ent)) * 180.0D
-                / Math.PI);
-        final float finishedYaw = mc.thePlayer.rotationYaw
-                + MathHelper.wrapAngleTo180_float(rotationYaw - mc.thePlayer.rotationYaw);
-        final float finishedPitch = mc.thePlayer.rotationPitch
-                + MathHelper.wrapAngleTo180_float(rotationPitch - mc.thePlayer.rotationPitch);
-        return new float[]{finishedYaw, -MathHelper.clamp_float(finishedPitch, -90, 90)};
+    private void updateRotations() {
+        lastYaw = yaw;
+        lastPitch = pitch;
+
+        final float[] rotations = this.getRotations();
+
+        yaw = rotations[0];
+        pitch = rotations[1];
+    }
+
+
+    private void update() {
+        if (target == null) {
+            lastYaw = mc.thePlayer.rotationYaw;
+            lastPitch = mc.thePlayer.rotationPitch;
+        } else {
+            this.updateRotations();
+        }
+    }
+
+    private float[] getRotations() {
+        final double predictValue = predict.getValue();
+
+        final double x = (targetPosX - (target.lastTickPosX - targetPosX) * predictValue) + 0.01 - mc.thePlayer.posX;
+        final double z = (targetPosZ - (target.lastTickPosZ - targetPosZ) * predictValue) - mc.thePlayer.posZ;
+
+        double minus = (mc.thePlayer.posY - targetPosY);
+
+        if (minus < -1.4) minus = -1.4;
+        if (minus > 0.1) minus = 0.1;
+
+        final double y = (targetPosY - (target.lastTickPosY - targetPosY) * predictValue) + 0.4 + target.getEyeHeight() / 1.3 - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight()) + minus;
+
+        final double xzSqrt = MathHelper.sqrt_double(x * x + z * z);
+
+        float yaw = MathHelper.wrapAngleTo180_float((float) Math.toDegrees(Math.atan2(z, x)) - 90.0F);
+        float pitch = MathHelper.wrapAngleTo180_float((float) Math.toDegrees(-Math.atan2(y, xzSqrt)));
+
+        final double randomAmount = random.getValue();
+
+        if (randomAmount != 0) {
+            randomYaw += ((Math.random() - 0.5) * randomAmount) / 2;
+            randomYaw += ((Math.random() - 0.5) * randomAmount) / 2;
+            randomPitch += ((Math.random() - 0.5) * randomAmount) / 2;
+
+            if (mc.thePlayer.ticksExisted % 5 == 0) {
+                randomYaw = (float) (((Math.random() - 0.5) * randomAmount) / 2);
+                randomPitch = (float) (((Math.random() - 0.5) * randomAmount) / 2);
+            }
+
+            yaw += randomYaw;
+            pitch += randomPitch;
+        }
+
+        final int fps = (int) (Minecraft.getDebugFPS() / 20.0F);
+
+        final float advancedYawDistance = (float) MathUtils.getRandom(this.minYawRotation.getValue(), this.maxYawRotation.getValue());
+        final float advancedPitchDistance = (float) MathUtils.getRandom(this.minPitchRotation.getValue(), this.maxPitchRotation.getValue());
+
+        final float advancedDeltaYaw = (((yaw - lastYaw) + 540) % 360) - 180;
+        final float advancedDeltaPitch = pitch - lastPitch;
+
+        final float advancedDistanceYaw = MathHelper.clamp_float(advancedDeltaYaw, -advancedYawDistance, advancedYawDistance) / fps * 4;
+        final float advancedDistancePitch = MathHelper.clamp_float(advancedDeltaPitch, -advancedPitchDistance, advancedPitchDistance) / fps * 4;
+
+        yaw = lastYaw + advancedDistanceYaw;
+        pitch = lastPitch + advancedDistancePitch;
+
+        final float[] rotations = new float[]{yaw, pitch};
+        final float[] lastRotations = new float[]{KillAura.yaw, KillAura.pitch};
+
+        final float[] fixedRotations = RotationUtils.getFixedRotation(rotations, lastRotations);
+
+        yaw = fixedRotations[0];
+        pitch = fixedRotations[1];
+
+        pitch = MathHelper.clamp_float(pitch, -90.0F, 90.0F);
+
+        return new float[]{yaw, pitch};
     }
 }

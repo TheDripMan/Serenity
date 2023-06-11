@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 public class NoSlow extends Module {
 
     public NoSlow() {
-        super("NoSlow", "Makes you move with full speed when using items", Category.MOVEMENT, Keyboard.KEY_NONE, false);
+        super("NoSlow", "Makes you move with full speed when using items", Category.MOVEMENT, Keyboard.KEY_R, false);
     }
 
     @Override

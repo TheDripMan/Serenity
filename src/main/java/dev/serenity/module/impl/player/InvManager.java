@@ -9,6 +9,7 @@ import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
 import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.math.TimerUtils;
+import dev.serenity.utilities.player.MovementUtils;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockSlime;
 import net.minecraft.block.BlockTNT;
@@ -33,7 +34,7 @@ public class InvManager extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", new String[]{"None", "Open Inventory", "Packet", "Packet Spam"}, "None", this);
 
     private final NoteSetting bypassSettings = new NoteSetting("Bypass Settings", this);
-    private final NumberSetting minDelay = new NumberSetting("Min Delay", 100, 0, 1000, 25, this) {
+    private final NumberSetting minDelay = new NumberSetting("Min Delay", 50, 0, 1000, 25, this) {
         @Override
         public void set() {
             if (minDelay.getValue() > maxDelay.getValue()) {
@@ -41,7 +42,7 @@ public class InvManager extends Module {
             }
         }
     };
-    private final NumberSetting maxDelay = new NumberSetting("Max Delay", 150, 0, 1000, 25, this) {
+    private final NumberSetting maxDelay = new NumberSetting("Max Delay", 50, 0, 1000, 25, this) {
         @Override
         public void set() {
             if (maxDelay.getValue() < minDelay.getValue()) {
@@ -56,6 +57,7 @@ public class InvManager extends Module {
     private final BooleanSetting throwHeads = new BooleanSetting("Throw Heads", true, this);
 
     private final NoteSetting generalSettings = new NoteSetting("General Settings", this);
+    private final BooleanSetting noMove = new BooleanSetting("No Move", false, this);
     private final BooleanSetting equipBestGear = new BooleanSetting("Equip Best Gear", true, this);
     private final NumberSetting swordSlot = new NumberSetting("Sword Slot", 1, 1, 10, 1, this);
     private final NumberSetting pickaxeSlot = new NumberSetting("Pickaxe Slot", 2, 1, 10, 1, this);
@@ -79,7 +81,7 @@ public class InvManager extends Module {
     private int ticksSinceChest;
 
     public InvManager() {
-        super("InvManager", "Automatically cleans your inventory.", Category.PLAYER, Keyboard.KEY_NONE, false);
+        super("InvManager", "Automatically cleans your inventory.", Category.PLAYER, Keyboard.KEY_F, false);
     }
 
     @Override
@@ -105,6 +107,10 @@ public class InvManager extends Module {
         }
 
         if (mc.thePlayer.isSwingInProgress) {
+            return;
+        }
+
+        if (noMove.isEnabled() && MovementUtils.isMoving()) {
             return;
         }
 
@@ -513,5 +519,10 @@ public class InvManager extends Module {
         }
 
         return 0;
+    }
+
+    @Override
+    public String getSuffix() {
+        return mode.getCurrentMode();
     }
 }

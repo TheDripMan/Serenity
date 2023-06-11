@@ -33,8 +33,4 @@ public final class ModeSetting extends Setting {
     public void setMode(String mode) {
         index = Arrays.asList(modes).indexOf(mode);
     }
-
-    public boolean is(String mode) {
-        return index == Arrays.asList(modes).indexOf(mode);
-    }
 }

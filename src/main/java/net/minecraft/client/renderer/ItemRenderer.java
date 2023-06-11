@@ -342,13 +342,15 @@ public class ItemRenderer
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
 
+            KillAura killAura = Serenity.getInstance().getModuleManager().getModule(KillAura.class);
+
             if (this.itemToRender != null)
             {
                 if (this.itemToRender.getItem() instanceof ItemMap)
                 {
                     this.renderItemMap(abstractclientplayer, f2, f, f1);
                 }
-                else if (abstractclientplayer.getItemInUseCount() > 0 || KillAura.blocking)
+                else if (abstractclientplayer.getItemInUseCount() > 0 || killAura.blocking)
                 {
                     EnumAction enumaction = this.itemToRender.getItemUseAction();
 

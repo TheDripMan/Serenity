@@ -38,7 +38,7 @@ public class ChestStealer extends Module {
     private final BooleanSetting ignoreTrash = new BooleanSetting("Ignore Trash", true, this);
 
     public ChestStealer() {
-        super("ChestStealer", "Automatically steals all items from a chest.", Category.WORLD, Keyboard.KEY_NONE, false);
+        super("ChestStealer", "Automatically steals all items from a chest.", Category.WORLD, Keyboard.KEY_F, false);
     }
 
 
