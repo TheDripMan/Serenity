@@ -1,18 +1,10 @@
 package dev.serenity.module;
 
-import dev.serenity.module.impl.combat.AutoPot;
-import dev.serenity.module.impl.combat.Criticals;
-import dev.serenity.module.impl.combat.KillAura;
-import dev.serenity.module.impl.combat.Velocity;
-import dev.serenity.module.impl.movement.NoSlow;
-import dev.serenity.module.impl.movement.Speed;
-import dev.serenity.module.impl.movement.Sprint;
-import dev.serenity.module.impl.player.InvManager;
-import dev.serenity.module.impl.render.ClickGUI;
-import dev.serenity.module.impl.render.Fullbright;
-import dev.serenity.module.impl.render.HUD;
-import dev.serenity.module.impl.world.ChestStealer;
-import dev.serenity.module.impl.world.Scaffold;
+import dev.serenity.module.impl.combat.*;
+import dev.serenity.module.impl.movement.*;
+import dev.serenity.module.impl.player.*;
+import dev.serenity.module.impl.render.*;
+import dev.serenity.module.impl.world.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,6 +31,8 @@ public class ModuleManager {
         modules.add(new Criticals());
         modules.add(new AutoPot());
         modules.add(new Scaffold());
+        modules.add(new Disabler());
+        modules.add(new Fly());
     }
 
     public <T extends Module> T getModule(Class<T> module) {

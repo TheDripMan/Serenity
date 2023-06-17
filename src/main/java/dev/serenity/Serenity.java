@@ -1,11 +1,8 @@
 package dev.serenity;
 
-import dev.serenity.auth.Account;
 import dev.serenity.command.CommandManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 
 public class Serenity {
     private static final Serenity instance = new Serenity();

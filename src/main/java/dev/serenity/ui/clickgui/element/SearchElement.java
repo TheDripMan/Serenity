@@ -1,6 +1,5 @@
 package dev.serenity.ui.clickgui.element;
 
-import dev.serenity.module.Category;
 import dev.serenity.ui.clickgui.element.module.ModuleElement;
 import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.other.HoveringUtils;
@@ -13,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_KEEP;
 
 public class SearchElement {
     private final SearchBox searchBox;
@@ -21,7 +19,7 @@ public class SearchElement {
     private float scrollHeight = 0F;
 
     public SearchElement(int x, int y, int x2, int y2) {
-        searchBox = new SearchBox(0, x + 15, (y + y2) / 2 - 12, 120, 20);
+        searchBox = new SearchBox(0, x + 15, (y + y2) / 2 - 12, y + 60, 20);
         searchIcon = new ResourceLocation("serenity/clickgui/search.png");
     }
 
@@ -37,15 +35,15 @@ public class SearchElement {
             searchBox.drawTextBox();
             int results = 0;
 
-            Fonts.fontBold30.drawString("Search results", x + 170F, 120F - 30F, Color.WHITE.getRGB());
+            Fonts.fontBold30.drawString("Search results", x + 170F, y + 30F, Color.WHITE.getRGB());
 
             handleScrolling(wheel);
 
-            float startY = 120F + scrollHeight;
+            float startY = y + 60 + scrollHeight;
 
             Stencil.write(true);
 
-            Gui.drawRect(x + 170F, 120F, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
+            Gui.drawRect(x + 170F, y + 60, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
 
             glEnable(GL_STENCIL_TEST);
             glStencilFunc(GL_EQUAL, 1, 0xFF);
@@ -64,7 +62,7 @@ public class SearchElement {
             glDisable(GL_STENCIL_TEST);
 
             if (results == 0) {
-                Fonts.font20.drawString("No results for " + searchBox.text, x + 170F, 120F - 5F, Color.WHITE.getRGB());
+                Fonts.font20.drawString("No results for " + searchBox.text, x + 170F, y + 55, Color.WHITE.getRGB());
             }
         }
 
@@ -74,7 +72,7 @@ public class SearchElement {
         searchBox.setFocused(HoveringUtils.isHovering(mouseX, mouseY, x + 15F, (y + y2) / 2 - 11F, x + 150F, (y + y2) / 2 + 10F));
 
         if (searchBox.text.length() > 0) {
-            float startY = 120F + scrollHeight;
+            float startY = y2 + scrollHeight;
             for (CategoryElement categoryElement : categoryElements) {
                 for (ModuleElement moduleElement : categoryElement.moduleElements) {
                     if (moduleElement.module.getName().toLowerCase().startsWith(searchBox.text.toLowerCase())) {

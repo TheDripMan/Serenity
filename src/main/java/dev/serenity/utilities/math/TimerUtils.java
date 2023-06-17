@@ -7,7 +7,7 @@ public class TimerUtils {
         this.lastMS = System.currentTimeMillis();
     }
 
-    private void reset() {
+    public void reset() {
         lastMS = System.currentTimeMillis();
     }
 

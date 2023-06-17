@@ -7,6 +7,7 @@ import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.render.RenderUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
@@ -21,8 +22,11 @@ public class ClickGui extends GuiScreen {
     private final SearchElement searchElement;
 
     public ClickGui() {
+        int x = 150, y = 60;
+        int x2 = this.width - x, y2 = this.height - y;
+
         categoryElements = new ArrayList<>();
-        searchElement = new SearchElement(325, 60, this.width - 150, 120);
+        searchElement = new SearchElement(x + 175, y, x2, y + 60);
 
         for (Category category : Category.values()) {
             categoryElements.add(new CategoryElement(category));
@@ -31,38 +35,44 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        RenderUtils.drawRoundedRect(150F, 60F, 325F + 8F, this.height - 60F, 8F, new Color(32, 32, 32, 100).getRGB());
-        Gui.drawRect(325F, 60F, 325F + 8F, this.height - 60F, new Color(32, 32, 32).getRGB());
-        RenderUtils.drawRoundedRect(325F, 60F, this.width - 150F, this.height - 60F, 8F, new Color(32, 32, 32).getRGB());
+        float x = 150F, y = 60F;
+        float x2 = this.width - x, y2 = this.height - y;
+
+        RenderUtils.drawRoundedRect(x, y, x + 183F, y2, 8F, new Color(32, 32, 32, 100).getRGB());
+        Gui.drawRect(x + 175F, y, x + 183F, y2, new Color(32, 32, 32).getRGB());
+        RenderUtils.drawRoundedRect(x + 175F, y, x2, y2, 8F, new Color(32, 32, 32).getRGB());
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        int i = (150 + 325) / 2;
+        float i = x + 175F / 2F;
         int j = this.height / 2 + 30;
         GuiInventory.drawEntityOnScreen(i, j, 70, i - mouseX, j - 50 - mouseY, this.mc.thePlayer);
 
-        RenderUtils.drawRoundedRectWithBorder(150F + 35F, this.height - 60F - 120F, 325F - 35F, this.height - 60F - 90F, 8F, new Color(32, 32, 32).getRGB(), new Color(0, 120, 212).getRGB(), 1F);
-        Fonts.fontBold25.drawString("Edit HUD", (150F + 325F) / 2F - Fonts.fontBold30.getStringWidth("Edit HUD") / 2F + 2F, this.height - 165F - Fonts.fontBold30.FONT_HEIGHT / 2F + 2F, new Color(180, 180, 180).getRGB());
-        Fonts.fontBold30.drawString(mc.session.getProfile().getName(), (150F + 325F) / 2F - Fonts.fontBold30.getStringWidth(mc.session.getProfile().getName()) / 2F, 100F, Color.WHITE.getRGB());
+        RenderUtils.drawRoundedRectWithBorder(x + 35F, y2 - 120F, x + 140F, y2 - 90F, 8F, new Color(32, 32, 32).getRGB(), new Color(0, 120, 212).getRGB(), 1F);
+        Fonts.fontBold25.drawString("Edit HUD", x + 175F / 2F - Fonts.fontBold30.getStringWidth("Edit HUD") / 2F + 2F, y2 - 105F - Fonts.fontBold30.FONT_HEIGHT / 2F + 2F, new Color(180, 180, 180).getRGB());
+        Fonts.fontBold30.drawString(mc.session.getProfile().getName(), x + 175F / 2F - Fonts.fontBold30.getStringWidth(mc.session.getProfile().getName()) / 2F, y + 40F, Color.WHITE.getRGB());
 
         if (!searchElement.isTyping()) {
-            float startY = 120F;
+            float startY = y + 60F;
             for (CategoryElement categoryElement : categoryElements) {
-                categoryElement.drawElement(mouseX, mouseY, 325F, startY, this.width - 150F, startY + 25F, this.height, Mouse.getDWheel());
+                categoryElement.drawElement(mouseX, mouseY, x + 175F, startY, x2, startY + 25F, this.height, Mouse.getDWheel(), y + 60F);
                 startY += 30F;
             }
         }
 
-        searchElement.drawElement(mouseX, mouseY, 325F, 60F, this.width - 150F, 120F, categoryElements, this.height, Mouse.getDWheel());
+        searchElement.drawElement(mouseX, mouseY, x + 175F, y, x2, y + 60F, categoryElements, this.height, Mouse.getDWheel());
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        searchElement.handleMouseClick(mouseX, mouseY, 325F, 60F, this.width - 150F, 120F, categoryElements);
+        float x = 150F, y = 60F;
+        float x2 = this.width - x, y2 = this.height - y;
+
+        searchElement.handleMouseClick(mouseX, mouseY, x + 175F, y, x2, y + 60F, categoryElements);
 
         if (!searchElement.isTyping()) {
-            float startY = 120F;
+            float startY = y + 60F;
             for (CategoryElement categoryElement : categoryElements) {
-                categoryElement.handleMouseClick(mouseX, mouseY, 325F, startY, this.width - 150F, startY + 25F);
+                categoryElement.handleMouseClick(mouseX, mouseY, x + 175F, startY, x2, startY + 25F, y + 60F);
                 startY += 30F;
             }
         }

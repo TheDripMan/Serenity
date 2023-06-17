@@ -33,7 +33,7 @@ public class CategoryElement {
         }
     }
 
-    public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float y2, float height, int wheel) {
+    public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float y2, float height, int wheel, float posY) {
         handleScrolling(wheel);
 
         if (HoveringUtils.isHovering(mouseX, mouseY, x + 15F, y, x + 150F, y2) || Category.selectedCategory == category) {
@@ -42,13 +42,13 @@ public class CategoryElement {
             if (category == Category.selectedCategory) {
                 RenderUtils.drawRoundedRect(x + 15F, y + 7F, x + 17F, y2 - 7F, 1F, new Color(76, 194, 255).getRGB());
 
-                Fonts.fontBold30.drawString(category.getName(), x + 170F, 120F - 30F, Color.WHITE.getRGB());
+                Fonts.fontBold30.drawString(category.getName(), x + 170F, posY - 30F, Color.WHITE.getRGB());
 
-                float startY = 120F + Category.selectedCategory.scrollHeight;
+                float startY = posY + Category.selectedCategory.scrollHeight;
 
                 Stencil.write(true);
 
-                Gui.drawRect(x + 170F, 120F, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
+                Gui.drawRect(x + 170F, posY, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
 
                 glEnable(GL_STENCIL_TEST);
                 glStencilFunc(GL_EQUAL, 1, 0xFF);
@@ -67,13 +67,13 @@ public class CategoryElement {
         Fonts.fontBold20.drawString(category.getName(), x + 40F, (y + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, Color.WHITE.getRGB());
     }
 
-    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2) {
+    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2, float posY) {
         if (HoveringUtils.isHovering(mouseX, mouseY, x + 15F, y, x + 150F, y2)) {
             Category.selectedCategory = category;
         }
 
         if (Category.selectedCategory == category) {
-            float startY = 120F + Category.selectedCategory.scrollHeight;
+            float startY = posY + Category.selectedCategory.scrollHeight;
             for (ModuleElement moduleElement : moduleElements) {
                 moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
                 startY += 50F + moduleElement.module.height;

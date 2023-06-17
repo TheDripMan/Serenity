@@ -22,6 +22,10 @@ public class C0FPacketConfirmTransaction implements Packet<INetHandlerPlayServer
         this.accepted = accepted;
     }
 
+    public void setUid(short uid) {
+        this.uid = uid;
+    }
+
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
