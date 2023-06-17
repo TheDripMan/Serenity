@@ -41,6 +41,8 @@ public class SearchElement {
 
             handleScrolling(wheel);
 
+            float startY = 120F + scrollHeight;
+
             Stencil.write(true);
 
             Gui.drawRect(x + 170F, 120F, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
@@ -50,7 +52,6 @@ public class SearchElement {
             glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
             for (CategoryElement categoryElement : categoryElements) {
-                float startY = 120F + scrollHeight;
                 for (ModuleElement moduleElement : categoryElement.moduleElements) {
                     if (moduleElement.module.getName().toLowerCase().startsWith(searchBox.text.toLowerCase())) {
                         moduleElement.drawElement(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
@@ -73,8 +74,8 @@ public class SearchElement {
         searchBox.setFocused(HoveringUtils.isHovering(mouseX, mouseY, x + 15F, (y + y2) / 2 - 11F, x + 150F, (y + y2) / 2 + 10F));
 
         if (searchBox.text.length() > 0) {
+            float startY = 120F + scrollHeight;
             for (CategoryElement categoryElement : categoryElements) {
-                float startY = 120F + scrollHeight;
                 for (ModuleElement moduleElement : categoryElement.moduleElements) {
                     if (moduleElement.module.getName().toLowerCase().startsWith(searchBox.text.toLowerCase())) {
                         moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, startY + 40F);

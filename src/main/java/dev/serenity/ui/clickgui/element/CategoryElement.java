@@ -15,7 +15,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_KEEP;
 
 public class CategoryElement {
     private final Category category;
