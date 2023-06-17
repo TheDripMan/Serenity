@@ -56,8 +56,8 @@ public class CategoryElement {
                 glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
                 for (ModuleElement moduleElement : moduleElements) {
-                    moduleElement.drawElement(mouseX, mouseY, x, startY, x2, moduleElement.module.height);
-                    startY += moduleElement.module.height + 10F;
+                    moduleElement.drawElement(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
+                    startY += 50F + moduleElement.module.height;
                 }
 
                 glDisable(GL_STENCIL_TEST);
@@ -76,8 +76,8 @@ public class CategoryElement {
         if (Category.selectedCategory == category) {
             float startY = 120F + Category.selectedCategory.scrollHeight;
             for (ModuleElement moduleElement : moduleElements) {
-                moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, moduleElement.module.height);
-                startY += moduleElement.module.height + 10F;
+                moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
+                startY += 50F + moduleElement.module.height;
             }
         }
     }

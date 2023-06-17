@@ -12,6 +12,7 @@ public class Fonts extends MinecraftInstance {
     public static GameFontRenderer font18 = new GameFontRenderer(getFont("SegoeUIVariable.ttf", 36));
     public static GameFontRenderer font20 = new GameFontRenderer(getFont("SegoeUIVariable.ttf", 40));
     public static GameFontRenderer fontBold20 = new GameFontRenderer(getFont("SegoeUIVariableSemibold.ttf", 40));
+    public static GameFontRenderer fontBold25 = new GameFontRenderer(getFont("SegoeUIVariableSemibold.ttf", 50));
     public static GameFontRenderer fontBold30 = new GameFontRenderer(getFont("SegoeUIVariableSemibold.ttf", 60));
 
     private static Font getFont(final String fontName, final int size) {

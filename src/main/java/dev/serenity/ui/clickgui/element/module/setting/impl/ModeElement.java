@@ -38,7 +38,6 @@ public class ModeElement extends SettingElement {
             float startY = y + 21F - 10F;
             float endY = startY + 30F * modeSetting.modes.length;
             this.settingHeight = endY - startY + 20F;
-
             RenderUtils.drawRoundedRectWithBorder(startX - 5F, startY - 5F,x2 - 13F + 5F , endY, 4F, new Color(44, 44, 44).getRGB(), new Color(36, 36, 36).getRGB(), 0.5F);
 
             for (String mode : modeSetting.modes) {

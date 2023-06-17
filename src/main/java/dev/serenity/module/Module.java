@@ -16,8 +16,9 @@ public class Module extends MinecraftInstance {
     private boolean hidden = false;
     public ArrayList<Setting> settings = new ArrayList<>();
     public boolean expanded = false;
-    public float height = 40F;
     public ResourceLocation arrow = new ResourceLocation("serenity/clickgui/arrow.png");
+    public float height = 0F;
+    public float settingHeight = 0F;
 
     public Module(String name, String description, Category category, int key, boolean enabled) {
         this.name = name;

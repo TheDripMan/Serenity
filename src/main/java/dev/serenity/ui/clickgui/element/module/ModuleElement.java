@@ -41,8 +41,16 @@ public class ModuleElement {
         }
     }
 
-    public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float height) {
-        RenderUtils.drawRoundedRect(x + 170F, y, x2 - 15F, y + height + 2F, 5F, new Color(45, 45, 45).getRGB());
+    public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float y2) {
+        float count = 0;
+        if (module.expanded) {
+            for (SettingElement settingElement : settingElements) {
+                count += settingElement.settingHeight;
+            }
+            module.height = count;
+        }
+
+        RenderUtils.drawRoundedRect(x + 170F, y, x2 - 15F, y2 + 2F, 5F, new Color(45, 45, 45).getRGB());
         Fonts.font20.drawString(module.getName(), x + 180F, y + 20F - Fonts.font20.FONT_HEIGHT / 2F - 3F, Color.WHITE.getRGB());
         Fonts.font18.drawString(module.getDescription(), x + 180F, y + 20F - Fonts.font18.FONT_HEIGHT / 2F + 7F, new Color(208, 208, 208).getRGB());
 
@@ -68,29 +76,23 @@ public class ModuleElement {
         }
     }
 
-    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float height) {
+    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2) {
         if (settingElements.size() > 0 && HoveringUtils.isHovering(mouseX, mouseY,x2 - 33F - 10F, y + 20F - 10F, x2 - 33F + 10F, y + 20F + 10F)) {
             module.expanded = !module.expanded;
 
             if (module.expanded) {
-                float count = 0F;
-                for (SettingElement settingElement : settingElements) {
-                    count += settingElement.settingHeight;
-                }
-                module.height = count + 40F;
                 module.arrow = new ResourceLocation("serenity/clickgui/downArrow.png");
-            }
-            else {
+            } else {
+                module.height = 0F;
                 module.arrow = new ResourceLocation("serenity/clickgui/arrow.png");
-                module.height = 40F;
             }
         }
 
         if (module.expanded) {
             float startY = y + 40F;
             for (SettingElement settingElement : settingElements) {
-                settingElement.handleMouseClick(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
-                startY += settingElement.settingHeight;
+                settingElement.handleMouseClick(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + 40F);
+                startY += 40F;
             }
         }
 
