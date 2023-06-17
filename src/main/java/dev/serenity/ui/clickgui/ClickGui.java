@@ -4,7 +4,6 @@ import dev.serenity.module.Category;
 import dev.serenity.ui.clickgui.element.CategoryElement;
 import dev.serenity.ui.clickgui.element.SearchElement;
 import dev.serenity.utilities.render.RenderUtils;
-import dev.serenity.utilities.render.Stencil;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -12,8 +11,6 @@ import org.lwjgl.input.Mouse;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class ClickGui extends GuiScreen {
     private final ArrayList<CategoryElement> categoryElements;
@@ -30,13 +27,8 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        Stencil.write(true);
         RenderUtils.drawRoundedRect(150F, 60F, 325F, this.height - 60F, 8F, new Color(32, 32, 32, 100).getRGB());
         RenderUtils.drawRoundedRect(325F, 60F, this.width - 150F, this.height - 60F, 8F, new Color(32, 32, 32).getRGB());
-
-        glEnable(GL_STENCIL_TEST);
-        glStencilFunc(GL_EQUAL, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
         if (!searchElement.isTyping()) {
             float startY = 120F;
@@ -47,8 +39,6 @@ public class ClickGui extends GuiScreen {
         }
 
         searchElement.drawElement(mouseX, mouseY, 325F, 60F, this.width - 150F, 120F, categoryElements);
-
-        glDisable(GL_STENCIL_TEST);
     }
 
     @Override
