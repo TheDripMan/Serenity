@@ -16,7 +16,7 @@ public class Serenity {
     private final HUD hud = new HUD();
 
     public void startClient() {
-        new Account("email", "password").login();
+
     }
 
     public void stopClient() {

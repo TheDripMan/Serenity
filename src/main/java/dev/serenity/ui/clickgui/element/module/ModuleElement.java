@@ -1,16 +1,14 @@
 package dev.serenity.ui.clickgui.element.module;
 
-import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import dev.serenity.setting.Setting;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
-import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
-import dev.serenity.ui.clickgui.element.CategoryElement;
+import dev.serenity.ui.clickgui.element.component.ToggleSwitch;
+import dev.serenity.ui.clickgui.element.module.setting.SettingElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.BooleanElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.ModeElement;
-import dev.serenity.ui.clickgui.element.module.setting.impl.NoteElement;
 import dev.serenity.ui.clickgui.element.module.setting.impl.NumberElement;
 import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.other.HoveringUtils;
@@ -18,62 +16,90 @@ import dev.serenity.utilities.render.RenderUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ModuleElement {
     public final Module module;
-    private final ResourceLocation arrow = new ResourceLocation("serenity/clickgui/arrow.png");
+    private final ArrayList<SettingElement> settingElements;
+    private final ToggleSwitch toggleSwitch;
 
     public ModuleElement(Module module) {
         this.module = module;
+        this.settingElements = new ArrayList<>();
+        this.toggleSwitch = new ToggleSwitch();
+
+        for (Setting setting : module.settings) {
+            if (setting instanceof ModeSetting) {
+                settingElements.add(new ModeElement((ModeSetting) setting));
+            }
+            if (setting instanceof NumberSetting) {
+                settingElements.add(new NumberElement((NumberSetting) setting));
+            }
+            if (setting instanceof BooleanSetting) {
+                settingElements.add(new BooleanElement((BooleanSetting) setting));
+            }
+        }
     }
 
-    public void drawElement(int mouseX, int mouseY, float left, float top, float right, float bottom) {
-        float y2 = top + 45F;
+    public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float height) {
+        RenderUtils.drawRoundedRect(x + 170F, y, x2 - 15F, y + height + 2F, 5F, new Color(45, 45, 45).getRGB());
+        Fonts.font20.drawString(module.getName(), x + 180F, y + 20F - Fonts.font20.FONT_HEIGHT / 2F - 3F, Color.WHITE.getRGB());
+        Fonts.font18.drawString(module.getDescription(), x + 180F, y + 20F - Fonts.font18.FONT_HEIGHT / 2F + 7F, new Color(208, 208, 208).getRGB());
 
-        Color backgroundColor = new Color(43, 43, 43);
-        if (HoveringUtils.isHovering(mouseX, mouseY, left, top, right, y2)) {
-            backgroundColor = new Color(50, 50, 50);
-        }
-        if (module.isEnabled()) {
-            backgroundColor = new Color(80, 80, 80);
-        }
+        toggleSwitch.state = module.isEnabled();
 
-        RenderUtils.drawRoundedRect(left - 0.5F, top - 0.5F, right + 0.5F, y2 + 0.5F, 3F, backgroundColor.getRGB());
+        if (settingElements.size() > 0) {
+            if (HoveringUtils.isHovering(mouseX, mouseY,x2 - 33F - 10F, y + 20F - 10F, x2 - 33F + 10F, y + 20F + 10F)) {
+                RenderUtils.drawRoundedRect(x2 - 33F - 10F, y + 20F - 10F, x2 - 33F + 10F, y + 20F + 10F, 5F, new Color(35, 35, 35).getRGB());
+            }
+            RenderUtils.drawImage(module.arrow, x2 - 40F, y + 20F - 7F, 14F, 14F);
+            toggleSwitch.onDraw(mouseX, mouseY, x2 - 72F, y + 20F - 6F, 23F, 12F);
 
-        Fonts.font20.drawString(module.getName(), left + 15F, (top + y2) / 2 - Fonts.font20.FONT_HEIGHT + 2F, new Color(255, 255, 255).getRGB());
-        Fonts.font18.drawString(module.getDescription(), left + 15F, (top + y2) / 2 + 3F, new Color(208, 208, 208).getRGB());
-
-        RenderUtils.drawImage(arrow, right - 20F, (top + y2) / 2 - 5F, 10F, 10F);
-    }
-
-    public void handleMouseClick(int mouseX, int mouseY, int mouseButton, float left, float top, float right, float bottom) {
-        float y2 = top + 45F;
-
-        if (mouseButton == 0) {
-            if (HoveringUtils.isHovering(mouseX, mouseY, left, top, right, y2)) {
-                Category.selectedCategory = module.getCategory();
-                Module.selectedModule = module;
-
-                for (Setting setting : module.settings) {
-                    if (setting instanceof BooleanSetting) {
-                        CategoryElement.settingElements.add(new BooleanElement((BooleanSetting) setting));
-                    }
-                    if (setting instanceof NoteSetting) {
-                        CategoryElement.settingElements.add(new NoteElement((NoteSetting) setting));
-                    }
-                    if (setting instanceof NumberSetting) {
-                        CategoryElement.settingElements.add(new NumberElement((NumberSetting) setting));
-                    }
-                    if (setting instanceof ModeSetting) {
-                        CategoryElement.settingElements.add(new ModeElement((ModeSetting) setting));
-                    }
+            if (module.expanded) {
+                float startY = y + 40F;
+                for (SettingElement settingElement : settingElements) {
+                    settingElement.drawElement(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
+                    startY += settingElement.settingHeight;
                 }
+            }
 
+        } else {
+            toggleSwitch.onDraw(mouseX, mouseY, x2 - 47F, y + 20F - 6F, 23F, 12F);
+        }
+    }
+
+    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float height) {
+        if (settingElements.size() > 0 && HoveringUtils.isHovering(mouseX, mouseY,x2 - 33F - 10F, y + 20F - 10F, x2 - 33F + 10F, y + 20F + 10F)) {
+            module.expanded = !module.expanded;
+
+            if (module.expanded) {
+                float count = 0F;
+                for (SettingElement settingElement : settingElements) {
+                    count += settingElement.settingHeight;
+                }
+                module.height = count + 40F;
+                module.arrow = new ResourceLocation("serenity/clickgui/downArrow.png");
+            }
+            else {
+                module.arrow = new ResourceLocation("serenity/clickgui/arrow.png");
+                module.height = 40F;
             }
         }
 
-        if (mouseButton == 1) {
-            if (HoveringUtils.isHovering(mouseX, mouseY, left, top, right, y2)) {
+        if (module.expanded) {
+            float startY = y + 40F;
+            for (SettingElement settingElement : settingElements) {
+                settingElement.handleMouseClick(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
+                startY += settingElement.settingHeight;
+            }
+        }
+
+        if (settingElements.size() > 0) {
+            if (HoveringUtils.isHovering(mouseX, mouseY, x2 - 72F, y + 20F - 6F, x2 - 72F + 23F, y + 20F + 6F)) {
+                module.toggle();
+            }
+        } else {
+            if (HoveringUtils.isHovering(mouseX, mouseY, x2 - 47F, y + 20F - 6F, x2 - 47F + 23F, y + 20F + 6F)) {
                 module.toggle();
             }
         }

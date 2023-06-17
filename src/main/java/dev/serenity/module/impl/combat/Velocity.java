@@ -14,7 +14,7 @@ public class Velocity extends Module {
     private int grimTick = 0;
     private int grimUpdateTick = 0;
 
-    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Cancel", "Grim"}, "Cancel", this);
+    private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Cancel", "Grim", "Hypixel"}, "Cancel", this);
 
     public Velocity() {
         super("Velocity", "Allows you to modify the amount of knockback you take.", Category.COMBAT, Keyboard.KEY_NONE, false);
@@ -41,6 +41,11 @@ public class Velocity extends Module {
                     case "Grim": {
                         event.cancelEvent();
                         grimTick = 10;
+                        break;
+                    }
+                    case "Hypixel": {
+                        event.cancelEvent();
+                        if (mc.thePlayer.onGround) mc.thePlayer.motionY = packet.getMotionY() / 8000.0;
                         break;
                     }
                 }

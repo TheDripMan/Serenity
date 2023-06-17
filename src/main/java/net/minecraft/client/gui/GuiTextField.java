@@ -59,8 +59,6 @@ public class GuiTextField extends Gui
     private GuiPageButtonList.GuiResponder field_175210_x;
     private Predicate<String> field_175209_y = Predicates.<String>alwaysTrue();
     private boolean shadow = true;
-    private boolean blue = false;
-
     public GuiTextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height)
     {
         this.id = componentId;
@@ -71,7 +69,7 @@ public class GuiTextField extends Gui
         this.height = par6Height;
     }
 
-    public GuiTextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height, boolean shadow, boolean blue) {
+    public GuiTextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height, boolean shadow) {
         this.id = componentId;
         this.fontRendererInstance = fontrendererObj;
         this.xPosition = x;
@@ -79,7 +77,6 @@ public class GuiTextField extends Gui
         this.width = par5Width;
         this.height = par6Height;
         this.shadow = shadow;
-        this.blue = blue;
     }
 
     public void func_175207_a(GuiPageButtonList.GuiResponder p_175207_1_)
@@ -649,11 +646,7 @@ public class GuiTextField extends Gui
 
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        if (blue) {
-            GlStateManager.color(0, 120/255F, 212/255F);
-        } else {
-            GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-        }
+        GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
         GlStateManager.disableTexture2D();
         GlStateManager.enableColorLogic();
         GlStateManager.colorLogicOp(5387);

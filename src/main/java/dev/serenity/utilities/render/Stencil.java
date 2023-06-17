@@ -8,7 +8,6 @@ import org.lwjgl.opengl.EXTFramebufferObject;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Stencil {
-
     static Minecraft mc = Minecraft.getMinecraft();
 
     public static void dispose() {
@@ -33,21 +32,21 @@ public class Stencil {
         glEnable(GL_STENCIL_TEST);
         glStencilFunc(GL_ALWAYS, 1, 65535);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        if (!renderClipLayer) {
+        if (!renderClipLayer)
             GlStateManager.colorMask(false, false, false, false);
-        }
     }
 
-    public static void write(boolean renderClipLayer, Framebuffer fb) {
+    public static void write(boolean renderClipLayer, Framebuffer fb, boolean clearStencil, boolean invert) {
         Stencil.checkSetupFBO(fb);
-        glClearStencil(0);
-        glClear(GL_STENCIL_BUFFER_BIT);
-        glEnable(GL_STENCIL_TEST);
-        glStencilFunc(GL_ALWAYS, 1, 65535);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        if (!renderClipLayer) {
-            GlStateManager.colorMask(false, false, false, false);
+        if (clearStencil) {
+            glClearStencil(0);
+            glClear(GL_STENCIL_BUFFER_BIT);
+            glEnable(GL_STENCIL_TEST);
         }
+        glStencilFunc(GL_ALWAYS, invert ? 0 : 1, 65535);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        if (!renderClipLayer)
+            GlStateManager.colorMask(false, false, false, false);
     }
 
     public static void checkSetupFBO() {

@@ -1,6 +1,6 @@
 package dev.serenity.module.impl.combat;
 
-import dev.serenity.event.impl.PreMotionEvent;
+import dev.serenity.event.impl.AttackEvent;
 import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import org.lwjgl.input.Keyboard;
@@ -11,11 +11,9 @@ public class Criticals extends Module {
     }
 
     @Override
-    public void onPreMotion(PreMotionEvent event) {
-        if (KillAura.attacking) {
-            if (mc.thePlayer.onGround) {
-                mc.thePlayer.jump();
-            }
+    public void onAttack(AttackEvent event) {
+        if (mc.thePlayer.onGround) {
+            mc.thePlayer.jump();
         }
     }
 }

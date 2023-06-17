@@ -3,6 +3,7 @@ package dev.serenity.module;
 import dev.serenity.event.impl.*;
 import dev.serenity.setting.Setting;
 import dev.serenity.utilities.MinecraftInstance;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 
@@ -14,8 +15,9 @@ public class Module extends MinecraftInstance {
     private boolean state;
     private boolean hidden = false;
     public ArrayList<Setting> settings = new ArrayList<>();
-    public static Module selectedModule = null;
-    public float settingScrollHeight = 0F;
+    public boolean expanded = false;
+    public float height = 40F;
+    public ResourceLocation arrow = new ResourceLocation("serenity/clickgui/arrow.png");
 
     public Module(String name, String description, Category category, int key, boolean enabled) {
         this.name = name;
@@ -82,4 +84,5 @@ public class Module extends MinecraftInstance {
     public void onSlowDown(final SlowDownEvent event) {}
     public void onTick(final TickEvent event) {}
     public void onStrafe(final StrafeEvent event) {}
+    public void onAttack(final AttackEvent event) {}
 }

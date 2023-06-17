@@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import dev.serenity.event.impl.AttackEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockDirectional;
@@ -1304,6 +1306,14 @@ public abstract class EntityPlayer extends EntityLivingBase
      */
     public void attackTargetEntityWithCurrentItem(Entity targetEntity)
     {
+        final AttackEvent event = new AttackEvent(targetEntity);
+        event.call();
+
+        targetEntity = event.getTarget();
+
+        if (event.isCancelled())
+            return;
+
         if (targetEntity.canAttackWithItem())
         {
             if (!targetEntity.hitByEntity(this))

@@ -86,6 +86,14 @@ public class EventHandler {
                     module.onStrafe(event);
                 }
             }
+        } else if (e instanceof AttackEvent) {
+            final AttackEvent event = ((AttackEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onAttack(event);
+                }
+            }
         }
     }
 }

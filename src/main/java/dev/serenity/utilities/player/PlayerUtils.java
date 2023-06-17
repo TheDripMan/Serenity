@@ -1,8 +1,12 @@
 package dev.serenity.utilities.player;
 
+import dev.serenity.utilities.MinecraftInstance;
+import net.minecraft.block.Block;
+import net.minecraft.util.BlockPos;
+
 import java.util.HashMap;
 
-public class PlayerUtils {
+public class PlayerUtils extends MinecraftInstance {
     private static final HashMap<Integer, Integer> GOOD_POTIONS = new HashMap<Integer, Integer>() {{
         put(6, 1); // Instant Health
         put(10, 2); // Regeneration
@@ -20,5 +24,9 @@ public class PlayerUtils {
 
     public static boolean goodPotion(final int id) {
         return GOOD_POTIONS.containsKey(id);
+    }
+
+    public static Block getBlockRelativeToPlayer(final double offsetX, final double offsetY, final double offsetZ) {
+        return mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX + offsetX, mc.thePlayer.posY + offsetY, mc.thePlayer.posZ + offsetZ)).getBlock();
     }
 }

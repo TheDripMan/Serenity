@@ -1,8 +1,10 @@
 package dev.serenity.module.impl.player;
 
+import dev.serenity.Serenity;
 import dev.serenity.event.impl.PreMotionEvent;
 import dev.serenity.module.Category;
 import dev.serenity.module.Module;
+import dev.serenity.module.impl.combat.AutoPot;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NoteSetting;
@@ -81,7 +83,7 @@ public class InvManager extends Module {
     private int ticksSinceChest;
 
     public InvManager() {
-        super("InvManager", "Automatically cleans your inventory.", Category.PLAYER, Keyboard.KEY_F, false);
+        super("InvManager", "Automatically cleans your inventory.", Category.PLAYER, Keyboard.KEY_NONE, false);
     }
 
     @Override
@@ -248,7 +250,7 @@ public class InvManager extends Module {
                         add(16);
                     }};
 
-                    if (!isPotionActive && (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6) && mc.thePlayer.getHealth() < 15))
+                    if (!isPotionActive && (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6) && mc.thePlayer.getHealth() < Serenity.getInstance().getModuleManager().getModule(AutoPot.class).health.getValue()))
                         bestPotion = i;
                 }
             }

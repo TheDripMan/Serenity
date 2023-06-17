@@ -1,5 +1,6 @@
 package dev.serenity.module;
 
+import dev.serenity.module.impl.combat.AutoPot;
 import dev.serenity.module.impl.combat.Criticals;
 import dev.serenity.module.impl.combat.KillAura;
 import dev.serenity.module.impl.combat.Velocity;
@@ -11,6 +12,7 @@ import dev.serenity.module.impl.render.ClickGUI;
 import dev.serenity.module.impl.render.Fullbright;
 import dev.serenity.module.impl.render.HUD;
 import dev.serenity.module.impl.world.ChestStealer;
+import dev.serenity.module.impl.world.Scaffold;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,6 +37,8 @@ public class ModuleManager {
         modules.add(new ChestStealer());
         modules.add(new InvManager());
         modules.add(new Criticals());
+        modules.add(new AutoPot());
+        modules.add(new Scaffold());
     }
 
     public <T extends Module> T getModule(Class<T> module) {

@@ -1100,6 +1100,10 @@ public abstract class Entity implements ICommandSender
         return this.inWater;
     }
 
+    public boolean isInLiquid() {
+        return this.isInWater() || this.isInLava();
+    }
+
     /**
      * Returns if this entity is in water and will end up adding the waters velocity to the entity
      */
