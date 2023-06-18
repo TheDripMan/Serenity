@@ -48,7 +48,7 @@ public class CategoryElement {
 
                 Stencil.write(true);
 
-                Gui.drawRect(x + 170F, posY, x2 - 15F, height - 60F, new Color(32, 32, 32).getRGB());
+                Gui.drawRect(x + 170F, posY, x2 - 15F, height, new Color(32, 32, 32).getRGB());
 
                 glEnable(GL_STENCIL_TEST);
                 glStencilFunc(GL_EQUAL, 1, 0xFF);
