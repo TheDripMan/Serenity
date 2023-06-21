@@ -40,7 +40,7 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        openingAnim.setEase(Easing.SINE_IN).setMin(100).setMax(500).setSpeed(750).setReversed(false).update();
+        openingAnim.setEase(Easing.SINE_IN).setMin(50).setMax(500).setSpeed(1000).setReversed(false).update();
 
         ScaledResolution sr = new ScaledResolution(mc);
 

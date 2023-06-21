@@ -8,8 +8,6 @@ import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.utilities.player.MovementUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.security.Key;
-
 public class Speed extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", new String[]{"Legit","Strafe"}, "Legit", this);
 
