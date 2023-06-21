@@ -1,6 +1,7 @@
 package dev.serenity.module.impl.combat;
 
 import dev.serenity.event.impl.AttackEvent;
+import dev.serenity.event.impl.PostMotionEvent;
 import dev.serenity.event.impl.PreMotionEvent;
 import dev.serenity.event.impl.UpdateEvent;
 import dev.serenity.module.Category;
@@ -17,7 +18,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -55,7 +55,8 @@ public class KillAura extends Module {
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
-    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Packet"}, "Fake",this);
+    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Grim"}, "Fake",this);
+    private final ModeSetting blockTiming = new ModeSetting("Block Timing", new String[]{"Pre", "Post"}, "Post", this, () -> !blockMode.getCurrentMode().equals("None"));
     private final BooleanSetting swing = new BooleanSetting("Swing", true, this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
     private final NumberSetting minYawRotation = new NumberSetting("Min Yaw Rot", 180, 1, 180, 0.1F, this) {
@@ -125,6 +126,13 @@ public class KillAura extends Module {
     }
 
     @Override
+    public void onPostMotion(PostMotionEvent event) {
+        if(target != null && isValidTarget(target)) {
+            if (blockTiming.getCurrentMode().equals("Post")) block();
+        }
+    }
+
+    @Override
     public void onPreMotion(PreMotionEvent event) {
         updateTargets();
         if(target != null && isValidTarget(target)) {
@@ -138,17 +146,17 @@ public class KillAura extends Module {
                 mc.thePlayer.rotationPitch = pitch;
             }
 
-            block();
+            if (blockTiming.getCurrentMode().equals("Pre")) block();
 
             if(timer.hasPassed(1000 / Math.round(RandomUtils.nextDouble(minCPS.getValue(), maxCPS.getValue())))) {
+                timer.reset();
+
                 attacking = true;
                 if (this.swing.isEnabled()) mc.thePlayer.swingItem();
                 PacketUtils.sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
 
                 final AttackEvent attackEvent = new AttackEvent(target);
                 attackEvent.call();
-
-                timer.reset();
             }
         } else {
             unblock();
@@ -202,8 +210,8 @@ public class KillAura extends Module {
             mc.thePlayer.setItemInUse(mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.getCurrentItem().getMaxItemUseDuration());
             blocking = true;
             switch (blockMode.getCurrentMode()) {
-                case "Packet": {
-                    PacketUtils.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
+                case "Grim": {
+                    mc.gameSettings.keyBindUseItem.setPressed(true);
                     break;
                 }
             }
@@ -215,7 +223,8 @@ public class KillAura extends Module {
         if (!blockMode.getCurrentMode().equals("None")) {
             blocking = false;
             switch (blockMode.getCurrentMode()) {
-                case "Packet": {
+                case "Grim": {
+                    mc.gameSettings.keyBindUseItem.setPressed(false);
                     break;
                 }
             }
