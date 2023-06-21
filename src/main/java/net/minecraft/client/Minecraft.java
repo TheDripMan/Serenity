@@ -39,6 +39,7 @@ import javax.imageio.ImageIO;
 import dev.serenity.Serenity;
 import dev.serenity.event.impl.KeyEvent;
 import dev.serenity.event.impl.TickEvent;
+import dev.serenity.utilities.animation.Delta;
 import dev.serenity.utilities.render.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -1062,11 +1063,22 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         System.gc();
     }
 
+    private long lastFrame = getTime();
+
+    private long getTime() {
+         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
     /**
      * Called repeatedly from run()
      */
     private void runGameLoop() throws IOException
     {
+        long currentTime = getTime();
+        int deltaTime = (int) (currentTime - lastFrame);
+        lastFrame = currentTime;
+        Delta.DELTATIME = deltaTime;
+
         long i = System.nanoTime();
         this.mcProfiler.startSection("root");
 

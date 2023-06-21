@@ -11,13 +11,8 @@ public class TimerUtils {
         lastMS = System.currentTimeMillis();
     }
 
-    public boolean hasPassed(long time, boolean reset) {
+    public boolean hasPassed(long time) {
         long currentMS = System.currentTimeMillis();
-        if(currentMS - lastMS > time) {
-            if(reset)
-                reset();
-            return true;
-        }
-        return false;
+        return currentMS - lastMS > time;
     }
 }

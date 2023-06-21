@@ -1,5 +1,6 @@
 package dev.serenity.module.impl.combat;
 
+import dev.serenity.event.impl.AttackEvent;
 import dev.serenity.event.impl.PreMotionEvent;
 import dev.serenity.event.impl.UpdateEvent;
 import dev.serenity.module.Category;
@@ -7,9 +8,8 @@ import dev.serenity.module.Module;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NumberSetting;
-import dev.serenity.utilities.math.MathUtils;
+import dev.serenity.utilities.math.RandomUtils;
 import dev.serenity.utilities.math.TimerUtils;
-import dev.serenity.utilities.other.ChatUtils;
 import dev.serenity.utilities.player.PacketUtils;
 import dev.serenity.utilities.player.RotationUtils;
 import net.minecraft.client.Minecraft;
@@ -17,10 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -31,12 +28,11 @@ import java.util.stream.Collectors;
 public class KillAura extends Module {
 
     private final TimerUtils timer = new TimerUtils();
-    private final TimerUtils blockTimer = new TimerUtils();
     private EntityLivingBase target;
     public boolean blocking;
     public static boolean attacking = false;
     private double targetPosX, targetPosY, targetPosZ;
-    public static float yaw, pitch, lastYaw, lastPitch, serverYaw, serverPitch;
+    public static float yaw, pitch, lastYaw, lastPitch;
     private float randomYaw, randomPitch;
 
     private final NumberSetting minCPS = new NumberSetting("Min CPS", 12, 1, 20, 1, this) {
@@ -59,7 +55,7 @@ public class KillAura extends Module {
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
-    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Packet", "Hypixel"}, "Fake",this);
+    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Packet"}, "Fake",this);
     private final BooleanSetting swing = new BooleanSetting("Swing", true, this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
     private final NumberSetting minYawRotation = new NumberSetting("Min Yaw Rot", 180, 1, 180, 0.1F, this) {
@@ -125,9 +121,6 @@ public class KillAura extends Module {
             targetPosX = target.posX;
             targetPosY = target.posY;
             targetPosZ = target.posZ;
-
-            serverYaw = yaw;
-            serverPitch = pitch;
         }
     }
 
@@ -138,18 +131,24 @@ public class KillAura extends Module {
             update();
 
             if (silentRotations.isEnabled()) {
-                event.setYaw(serverYaw);
-                event.setPitch(serverPitch);
+                event.setYaw(yaw);
+                event.setPitch(pitch);
             } else {
-                mc.thePlayer.rotationYaw = serverYaw;
-                mc.thePlayer.rotationPitch = serverPitch;
+                mc.thePlayer.rotationYaw = yaw;
+                mc.thePlayer.rotationPitch = pitch;
             }
 
-            if(timer.hasPassed(1000 / Math.round(MathUtils.getRandom(minCPS.getValue(), maxCPS.getValue())), true)) {
+            block();
+
+            if(timer.hasPassed(1000 / Math.round(RandomUtils.nextDouble(minCPS.getValue(), maxCPS.getValue())))) {
                 attacking = true;
                 if (this.swing.isEnabled()) mc.thePlayer.swingItem();
                 PacketUtils.sendPacket(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
-                block();
+
+                final AttackEvent attackEvent = new AttackEvent(target);
+                attackEvent.call();
+
+                timer.reset();
             }
         } else {
             unblock();
@@ -205,10 +204,6 @@ public class KillAura extends Module {
             switch (blockMode.getCurrentMode()) {
                 case "Packet": {
                     PacketUtils.sendPacket(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
-                    break;
-                }
-                case "Hypixel": {
-
                     break;
                 }
             }
@@ -283,8 +278,8 @@ public class KillAura extends Module {
 
         final int fps = (int) (Minecraft.getDebugFPS() / 20.0F);
 
-        final float advancedYawDistance = (float) MathUtils.getRandom( (double) this.minYawRotation.getValue(), this.maxYawRotation.getValue());
-        final float advancedPitchDistance = (float) MathUtils.getRandom( (double) this.minPitchRotation.getValue(), this.maxPitchRotation.getValue());
+        final float advancedYawDistance = RandomUtils.nextFloat(this.minYawRotation.getValue(), this.maxYawRotation.getValue());
+        final float advancedPitchDistance = RandomUtils.nextFloat(this.minPitchRotation.getValue(), this.maxPitchRotation.getValue());
 
         final float advancedDeltaYaw = (((yaw - lastYaw) + 540) % 360) - 180;
         final float advancedDeltaPitch = pitch - lastPitch;

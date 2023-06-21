@@ -67,7 +67,7 @@ public class CategoryElement {
         Fonts.fontBold20.drawString(category.getName(), x + 40F, (y + y2) / 2F - Fonts.fontBold20.FONT_HEIGHT / 2F + 2F, Color.WHITE.getRGB());
     }
 
-    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2, float posY) {
+    public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2, float posY, float height) {
         if (HoveringUtils.isHovering(mouseX, mouseY, x + 15F, y, x + 150F, y2)) {
             Category.selectedCategory = category;
         }
@@ -75,7 +75,9 @@ public class CategoryElement {
         if (Category.selectedCategory == category) {
             float startY = posY + Category.selectedCategory.scrollHeight;
             for (ModuleElement moduleElement : moduleElements) {
-                moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
+                if (HoveringUtils.isHovering(mouseX, mouseY, x + 170F, posY, x2 - 15F, height)) {
+                    moduleElement.handleMouseClick(mouseX, mouseY, x, startY, x2, startY + 40F + moduleElement.module.height);
+                }
                 startY += 50F + moduleElement.module.height;
             }
         }

@@ -14,10 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameFontRenderer extends FontRenderer {
-    private AWTFontRenderer defaultFont;
-    private AWTFontRenderer boldFont;
-    private AWTFontRenderer italicFont;
-    private AWTFontRenderer boldItalicFont;
+    private final AWTFontRenderer defaultFont;
+    private final AWTFontRenderer boldFont;
+    private final AWTFontRenderer italicFont;
+    private final AWTFontRenderer boldItalicFont;
 
     public GameFontRenderer(Font font) {
         super(Minecraft.getMinecraft().gameSettings,
@@ -197,15 +197,7 @@ public class GameFontRenderer extends FontRenderer {
 
     @Override
     public int getStringWidth(String text) {
-        if (text == null) {
-            return 0;
-        }
         if (text.isEmpty()) {
-            return 0;
-        }
-
-
-        if (text == null) {
             return 0;
         }
 

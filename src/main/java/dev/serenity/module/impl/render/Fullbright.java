@@ -9,7 +9,6 @@ import dev.serenity.setting.impl.NumberSetting;
 import org.lwjgl.input.Keyboard;
 
 public class Fullbright extends Module {
-    private final ModeSetting test = new ModeSetting("test", new String[]{"aaaaaaaaaaaaaaaaa", "aaaaaaaa"}, "aaaaaaaaaaaaaaaaa", this);
 
     private final NumberSetting minCPS = new NumberSetting("Min CPS", 12, 1, 20, 1, this) {
         @Override

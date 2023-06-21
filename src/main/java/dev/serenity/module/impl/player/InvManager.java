@@ -10,6 +10,7 @@ import dev.serenity.setting.impl.ModeSetting;
 import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
 import dev.serenity.utilities.math.MathUtils;
+import dev.serenity.utilities.math.RandomUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.MovementUtils;
 import net.minecraft.block.BlockFalling;
@@ -76,7 +77,7 @@ public class InvManager extends Module {
 
     private boolean changingSettings;
 
-    private TimerUtils timer;
+    private TimerUtils timer = new TimerUtils();
     private long delay;
     private boolean movedItem;
     private boolean inventoryOpen;
@@ -88,7 +89,7 @@ public class InvManager extends Module {
 
     @Override
     public void onEnable() {
-        timer = new TimerUtils();
+
     }
 
     @Override
@@ -116,13 +117,14 @@ public class InvManager extends Module {
             return;
         }
 
-        delay = Math.round(MathUtils.getRandom(minDelay.getValue(), maxDelay.getValue()));
+        delay = RandomUtils.nextInt((int) minDelay.getValue(), (int) maxDelay.getValue());
 
-        if (!timer.hasPassed(delay, true)) {
+        if (!timer.hasPassed(delay)) {
             return;
         }
 
         movedItem = false;
+        timer.reset();
 
         switch (mode.getCurrentMode()) {
             case "Open Inventory":

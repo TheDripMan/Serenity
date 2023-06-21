@@ -6,6 +6,7 @@ import dev.serenity.module.Module;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.NumberSetting;
 import dev.serenity.utilities.math.MathUtils;
+import dev.serenity.utilities.math.RandomUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.ItemUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -47,7 +48,7 @@ public class ChestStealer extends Module {
         if (mc.currentScreen instanceof GuiChest) {
             final ContainerChest container = (ContainerChest) mc.thePlayer.openContainer;
 
-            if (!this.timer.hasPassed(this.nextClick, true)) {
+            if (!this.timer.hasPassed(this.nextClick)) {
                 return;
             }
 
@@ -64,8 +65,9 @@ public class ChestStealer extends Module {
                     continue;
                 }
 
-                this.nextClick = Math.round(MathUtils.getRandom(this.minDelay.getValue(), this.maxDelay.getValue()));
+                this.nextClick = RandomUtils.nextInt((int) this.minDelay.getValue(), (int) this.maxDelay.getValue());
                 mc.playerController.windowClick(container.windowId, i, 0, 1, mc.thePlayer);
+                this.timer.reset();
                 this.lastClick = 0;
                 return;
             }

@@ -1,10 +1,8 @@
 package dev.serenity.utilities.math;
 
-import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MathUtils {
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     public static float round(final float value, final float places) {
         if (places < 0) throw new IllegalArgumentException();
@@ -22,10 +20,6 @@ public class MathUtils {
             max = d;
         }
         return ThreadLocalRandom.current().nextDouble(min, max);
-    }
-
-    public static double getRandom(final double min, final double max) {
-        return min + (RANDOM.nextDouble() * (max - min));
     }
 
 }

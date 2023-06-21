@@ -1,5 +1,6 @@
 package dev.serenity;
 
+import dev.serenity.auth.Account;
 import dev.serenity.command.CommandManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
@@ -13,7 +14,7 @@ public class Serenity {
     private final HUD hud = new HUD();
 
     public void startClient() {
-
+        new Account("hawkclone@outlook.com", "Toan1804#").login();
     }
 
     public void stopClient() {
