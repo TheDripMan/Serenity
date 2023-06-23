@@ -21,16 +21,20 @@ import java.util.ArrayList;
 
 public class ClickGui extends GuiScreen {
     private final ArrayList<CategoryElement> categoryElements;
-    private final SearchElement searchElement;
+    private SearchElement searchElement;
     private int x, y, x2, y2;
     private final Animate openingAnim;
 
-    public ClickGui() {
+    @Override
+    public void initGui() {
         x = 150; y = 60;
         x2 = this.width - x; y2 = this.height - y;
 
-        categoryElements = new ArrayList<>();
         searchElement = new SearchElement(x + 175, y, x2,y + 60);
+    }
+
+    public ClickGui() {
+        categoryElements = new ArrayList<>();
         openingAnim = new Animate();
 
         for (Category category : Category.values()) {
@@ -43,9 +47,6 @@ public class ClickGui extends GuiScreen {
         openingAnim.setEase(Easing.SINE_IN).setMin(50).setMax(500).setSpeed(1000).setReversed(false).update();
 
         ScaledResolution sr = new ScaledResolution(mc);
-
-        x = 150; y = 60;
-        x2 = this.width - x; y2 = this.height - y;
 
         RenderUtils.scale(sr.getScaledWidth() / 2f, sr.getScaledHeight() / 2f, openingAnim.getValue() / 500, () -> {
             RenderUtils.drawRoundedRect(x, y, x + 183F, y2, 8F, new Color(32, 32, 32, 100).getRGB());

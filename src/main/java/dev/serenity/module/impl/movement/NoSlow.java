@@ -26,7 +26,7 @@ public class NoSlow extends Module {
             return;
 
         if (mode.getCurrentMode().equals("Grim")) {
-            if (mc.thePlayer.isUsingItem() || killAura.blocking) {
+            if (mc.thePlayer.isBlocking() || killAura.blocking) {
                 PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem % 8 + 1));
                 PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
             }

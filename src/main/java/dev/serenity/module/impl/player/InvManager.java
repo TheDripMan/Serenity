@@ -7,9 +7,7 @@ import dev.serenity.module.Module;
 import dev.serenity.module.impl.combat.AutoPot;
 import dev.serenity.setting.impl.BooleanSetting;
 import dev.serenity.setting.impl.ModeSetting;
-import dev.serenity.setting.impl.NoteSetting;
 import dev.serenity.setting.impl.NumberSetting;
-import dev.serenity.utilities.math.MathUtils;
 import dev.serenity.utilities.math.RandomUtils;
 import dev.serenity.utilities.math.TimerUtils;
 import dev.serenity.utilities.player.MovementUtils;
@@ -33,10 +31,8 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 
 public class InvManager extends Module {
-    private final NoteSetting modeSettings = new NoteSetting("Mode Settings", this);
     private final ModeSetting mode = new ModeSetting("Mode", new String[]{"None", "Open Inventory", "Packet", "Packet Spam"}, "None", this);
 
-    private final NoteSetting bypassSettings = new NoteSetting("Bypass Settings", this);
     private final NumberSetting minDelay = new NumberSetting("Min Delay", 50, 0, 1000, 25, this) {
         @Override
         public void set() {
@@ -54,12 +50,10 @@ public class InvManager extends Module {
         }
     };
 
-    private final NoteSetting throwSettings = new NoteSetting("Throw Settings", this);
     private final BooleanSetting throwUselessItems = new BooleanSetting("Throw Useless Items", true, this);
     private final BooleanSetting throwCustomItems = new BooleanSetting("Throw Custom Items", true, this);
     private final BooleanSetting throwHeads = new BooleanSetting("Throw Heads", true, this);
 
-    private final NoteSetting generalSettings = new NoteSetting("General Settings", this);
     private final BooleanSetting noMove = new BooleanSetting("No Move", false, this);
     private final BooleanSetting equipBestGear = new BooleanSetting("Equip Best Gear", true, this);
     private final NumberSetting swordSlot = new NumberSetting("Sword Slot", 1, 1, 10, 1, this);

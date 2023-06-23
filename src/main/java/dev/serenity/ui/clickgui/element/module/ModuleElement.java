@@ -66,8 +66,10 @@ public class ModuleElement {
             if (module.expanded) {
                 float startY = y + 40F;
                 for (SettingElement settingElement : settingElements) {
-                    settingElement.drawElement(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
-                    startY += settingElement.settingHeight;
+                    if (settingElement.isDisplayable()) {
+                        settingElement.drawElement(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
+                        startY += settingElement.settingHeight;
+                    }
                 }
             }
 
@@ -91,8 +93,10 @@ public class ModuleElement {
         if (module.expanded) {
             float startY = y + 40F;
             for (SettingElement settingElement : settingElements) {
-                settingElement.handleMouseClick(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + 40F);
-                startY += 40F;
+                if (settingElement.isDisplayable()) {
+                    settingElement.handleMouseClick(mouseX, mouseY,x + 170F, startY, x2 - 15F, startY + settingElement.settingHeight);
+                    startY += settingElement.settingHeight;
+                }
             }
         }
 

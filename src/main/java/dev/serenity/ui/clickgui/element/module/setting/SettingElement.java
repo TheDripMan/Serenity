@@ -12,4 +12,8 @@ public class SettingElement {
 
     public void drawElement(int mouseX, int mouseY, float x, float y, float x2, float y2) {}
     public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2) {}
+
+    public boolean isDisplayable() {
+        return setting.canDisplay.get();
+    }
 }

@@ -1,6 +1,5 @@
 package dev.serenity.utilities.render;
 
-import dev.serenity.ui.font.Fonts;
 import dev.serenity.utilities.MinecraftInstance;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -68,53 +67,9 @@ public class RenderUtils extends MinecraftInstance {
         GlStateManager.disableBlend();
     }
 
-    public static void drawRoundedRectWithBorder(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color , int outlineColor, float thickness) {
-        drawRoundedRect(paramXStart - thickness, paramYStart - thickness, paramXEnd + thickness, paramYEnd + thickness, radius, outlineColor);
-        float alpha = (color >> 24 & 0xFF) / 255.0F;
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-
-        float z;
-        if (paramXStart > paramXEnd) {
-            z = paramXStart;
-            paramXStart = paramXEnd;
-            paramXEnd = z;
-        }
-
-        if (paramYStart > paramYEnd) {
-            z = paramYStart;
-            paramYStart = paramYEnd;
-            paramYEnd = z;
-        }
-
-        double x1 = paramXStart + radius;
-        double y1 = paramYStart + radius;
-        double x2 = paramXEnd - radius;
-        double y2 = paramYEnd - radius;
-
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.color(red, green, blue, alpha);
-        worldrenderer.func_181668_a(GL_POLYGON, DefaultVertexFormats.field_181705_e);
-
-        double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 1)
-            worldrenderer.func_181662_b(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius, 0.0D).func_181675_d();
-        for (double i = 90; i <= 180; i += 1)
-            worldrenderer.func_181662_b(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius, 0.0D).func_181675_d();
-        for (double i = 180; i <= 270; i += 1)
-            worldrenderer.func_181662_b(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius, 0.0D).func_181675_d();
-        for (double i = 270; i <= 360; i += 1)
-            worldrenderer.func_181662_b(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius, 0.0D).func_181675_d();
-
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+    public static void drawRoundedRectWithBorder(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color , int borderColor, float thickness) {
+        drawRoundedRect(paramXStart - thickness, paramYStart - thickness, paramXEnd + thickness, paramYEnd + thickness, radius, borderColor);
+        drawRoundedRect(paramXStart, paramYStart, paramXEnd, paramYEnd, radius, color);
     }
 
     public static void drawImage(ResourceLocation image, float x, float y, float width, float height) {
@@ -130,17 +85,6 @@ public class RenderUtils extends MinecraftInstance {
         glDepthMask(true);
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
-    }
-
-    public static void quickDrawRect(final float x, final float y, final float x2, final float y2) {
-        glBegin(GL_QUADS);
-
-        glVertex2d(x2, y);
-        glVertex2d(x, y);
-        glVertex2d(x, y2);
-        glVertex2d(x2, y2);
-
-        glEnd();
     }
 
     public static void drawFilledCircle(final float xx, final float yy, final float radius, final Color color) {
@@ -179,43 +123,6 @@ public class RenderUtils extends MinecraftInstance {
         glVertex2d(x1, y1);
         glEnd();
         glEnable(GL_TEXTURE_2D);
-    }
-
-    public static void fastRoundedRect(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius) {
-        float z = 0;
-        if (paramXStart > paramXEnd) {
-            z = paramXStart;
-            paramXStart = paramXEnd;
-            paramXEnd = z;
-        }
-
-        if (paramYStart > paramYEnd) {
-            z = paramYStart;
-            paramYStart = paramYEnd;
-            paramYEnd = z;
-        }
-
-        double x1 = (paramXStart + radius);
-        double y1 = paramYStart + radius;
-        double x2 = (paramXEnd - radius);
-        double y2 = (paramYEnd - radius);
-
-        glEnable(GL_LINE_SMOOTH);
-        glLineWidth(1);
-
-        glBegin(GL_POLYGON);
-
-        double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 1)
-            glVertex2d(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        for (double i = 90; i <= 180; i += 1)
-            glVertex2d(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 180; i <= 270; i += 1)
-            glVertex2d(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 270; i <= 360; i += 1)
-            glVertex2d(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
     }
 
     public static void scale(float x, float y, float scale, Runnable data) {

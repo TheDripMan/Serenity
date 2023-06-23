@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import dev.serenity.ui.mainmenu.MainMenu;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
@@ -18,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.MapItemRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.EffectRenderer;
@@ -2691,9 +2692,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
             }
         }
 
-        if (this.mc.currentScreen instanceof GuiMainMenu)
+        if (this.mc.currentScreen instanceof MainMenu)
         {
-            this.updateMainMenu((GuiMainMenu)this.mc.currentScreen);
+            this.updateMainMenu((MainMenu)this.mc.currentScreen);
         }
 
         if (this.updatedWorld != world)
@@ -2731,7 +2732,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         }
     }
 
-    private void updateMainMenu(GuiMainMenu p_updateMainMenu_1_)
+    private void updateMainMenu(MainMenu p_updateMainMenu_1_)
     {
         try
         {

@@ -1,26 +1,30 @@
 package dev.serenity;
 
-import dev.serenity.auth.Account;
 import dev.serenity.command.CommandManager;
+import dev.serenity.config.ConfigManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 
 public class Serenity {
     private static final Serenity instance = new Serenity();
     private String name = "Serenity";
     private final double version = 1.0;
-    private final ModuleManager moduleManager = new ModuleManager();
-    private final CommandManager commandManager = new CommandManager();
-    private final HUD hud = new HUD();
+
+    private ModuleManager moduleManager;
+    private CommandManager commandManager;
+    private HUD hud;
 
     public void startClient() {
+        moduleManager = new ModuleManager();
+        commandManager = new CommandManager();
+        hud = new HUD();
 
+        ConfigManager.init();
+        ConfigManager.config.loadConfig();
     }
 
     public void stopClient() {
-
+        ConfigManager.stop();
     }
 
     public static Serenity getInstance() {

@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -56,7 +57,7 @@ public class KillAura extends Module {
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
     public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Grim"}, "Fake",this);
-    private final ModeSetting blockTiming = new ModeSetting("Block Timing", new String[]{"Pre", "Post"}, "Post", this, () -> !blockMode.getCurrentMode().equals("None"));
+    private final ModeSetting blockTiming = new ModeSetting("Block Timing", new String[]{"Pre", "Post"}, "Post", this, () -> !blockMode.getCurrentMode().equals("None") && !blockMode.getCurrentMode().equals("Fake"));
     private final BooleanSetting swing = new BooleanSetting("Swing", true, this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
     private final NumberSetting minYawRotation = new NumberSetting("Min Yaw Rot", 180, 1, 180, 0.1F, this) {
@@ -136,6 +137,8 @@ public class KillAura extends Module {
     public void onPreMotion(PreMotionEvent event) {
         updateTargets();
         if(target != null && isValidTarget(target)) {
+            if (blockTiming.getCurrentMode().equals("Pre")) block();
+
             update();
 
             if (silentRotations.isEnabled()) {
@@ -145,8 +148,6 @@ public class KillAura extends Module {
                 mc.thePlayer.rotationYaw = yaw;
                 mc.thePlayer.rotationPitch = pitch;
             }
-
-            if (blockTiming.getCurrentMode().equals("Pre")) block();
 
             if(timer.hasPassed(1000 / Math.round(RandomUtils.nextDouble(minCPS.getValue(), maxCPS.getValue())))) {
                 timer.reset();
@@ -211,7 +212,7 @@ public class KillAura extends Module {
             blocking = true;
             switch (blockMode.getCurrentMode()) {
                 case "Grim": {
-                    mc.gameSettings.keyBindUseItem.setPressed(true);
+                    mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
                     break;
                 }
             }
@@ -224,7 +225,6 @@ public class KillAura extends Module {
             blocking = false;
             switch (blockMode.getCurrentMode()) {
                 case "Grim": {
-                    mc.gameSettings.keyBindUseItem.setPressed(false);
                     break;
                 }
             }

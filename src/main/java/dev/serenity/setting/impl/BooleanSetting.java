@@ -29,4 +29,8 @@ public class BooleanSetting extends Setting {
     public boolean isEnabled() {
         return state;
     }
+
+    public void setEnabled(boolean state) {
+        this.state = state;
+    }
 }
