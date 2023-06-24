@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import dev.serenity.event.impl.MoveEvent;
 import dev.serenity.event.impl.StrafeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -590,6 +591,16 @@ public abstract class Entity implements ICommandSender
      */
     public void moveEntity(double x, double y, double z)
     {
+        MoveEvent moveEvent = new MoveEvent(x, y, z);
+        moveEvent.call();
+
+        if (moveEvent.isCancelled())
+            return;
+
+        x = moveEvent.getX();
+        y = moveEvent.getY();
+        z = moveEvent.getZ();
+
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));

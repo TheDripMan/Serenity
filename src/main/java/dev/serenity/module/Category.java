@@ -9,6 +9,7 @@ public enum Category {
 
     private final String name;
     public static Category selectedCategory = COMBAT;
+    public static Category lastCategory = null;
     public float scrollHeight = 0F;
 
     Category(String name) {

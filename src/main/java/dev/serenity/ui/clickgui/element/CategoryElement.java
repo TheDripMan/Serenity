@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.*;
 
 public class CategoryElement {
-    private final Category category;
+    public final Category category;
     private final ResourceLocation iconLocation;
     public final ArrayList<ModuleElement> moduleElements;
 
@@ -69,6 +69,7 @@ public class CategoryElement {
 
     public void handleMouseClick(int mouseX, int mouseY, float x, float y, float x2, float y2, float posY, float height) {
         if (HoveringUtils.isHovering(mouseX, mouseY, x + 15F, y, x + 150F, y2)) {
+            Category.lastCategory = Category.selectedCategory;
             Category.selectedCategory = category;
         }
 

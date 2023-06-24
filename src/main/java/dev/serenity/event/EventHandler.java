@@ -3,6 +3,7 @@ package dev.serenity.event;
 import dev.serenity.Serenity;
 import dev.serenity.event.impl.*;
 import dev.serenity.module.Module;
+import net.minecraft.block.Block;
 
 import java.util.ArrayList;
 
@@ -92,6 +93,22 @@ public class EventHandler {
             for (final Module module : modules) {
                 if (module.isEnabled()) {
                     module.onAttack(event);
+                }
+            }
+        } else if (e instanceof BlockBBEvent) {
+            final BlockBBEvent event = ((BlockBBEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onBlockBB(event);
+                }
+            }
+        } else if (e instanceof MoveEvent) {
+            final MoveEvent event = ((MoveEvent) e);
+
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    module.onMove(event);
                 }
             }
         }

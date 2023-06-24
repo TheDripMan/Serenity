@@ -28,6 +28,7 @@ public class Config {
         if (!dir.exists()) {
             try {
                 dir.createNewFile();
+                saveConfig();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -69,42 +70,43 @@ public class Config {
     }
 
     public void loadConfig() {
-        if (!dir.exists()) return;
-        try {
-            Gson gson = new Gson();
-            FileReader fileReader = new FileReader(dir);
-            JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
-            fileReader.close();
+        if (dir.exists()) {
+            try {
+                Gson gson = new Gson();
+                FileReader fileReader = new FileReader(dir);
+                JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
+                fileReader.close();
 
-            for (String moduleName : jsonObject.keySet()) {
-                JsonObject moduleObject = jsonObject.getAsJsonObject(moduleName);
-                String keyBind = moduleObject.get("Key Bind").getAsString();
-                boolean state = moduleObject.get("State").getAsBoolean();
-                JsonObject settingsObject = moduleObject.getAsJsonObject("Settings");
+                for (String moduleName : jsonObject.keySet()) {
+                    JsonObject moduleObject = jsonObject.getAsJsonObject(moduleName);
+                    String keyBind = moduleObject.get("Key Bind").getAsString();
+                    boolean state = moduleObject.get("State").getAsBoolean();
+                    JsonObject settingsObject = moduleObject.getAsJsonObject("Settings");
 
-                final Module module = Serenity.getInstance().getModuleManager().getModule(moduleName);
-                module.setKey(Keyboard.getKeyIndex(keyBind));
-                module.setState(state);
+                    final Module module = Serenity.getInstance().getModuleManager().getModule(moduleName);
+                    module.setKey(Keyboard.getKeyIndex(keyBind));
+                    module.setState(state);
 
-                Set<Map.Entry<String, JsonElement>> settingsEntries = settingsObject.entrySet();
-                for (Map.Entry<String, JsonElement> entry : settingsEntries) {
-                    String settingName = entry.getKey();
-                    JsonElement settingValue = entry.getValue();
+                    Set<Map.Entry<String, JsonElement>> settingsEntries = settingsObject.entrySet();
+                    for (Map.Entry<String, JsonElement> entry : settingsEntries) {
+                        String settingName = entry.getKey();
+                        JsonElement settingValue = entry.getValue();
 
-                    Setting setting = module.getSetting(settingName);
-                    if (setting instanceof NumberSetting) {
-                        ((NumberSetting) setting).setValue(settingValue.getAsFloat());
-                    }
-                    if (setting instanceof BooleanSetting) {
-                        ((BooleanSetting) setting).setEnabled(settingValue.getAsBoolean());
-                    }
-                    if (setting instanceof ModeSetting) {
-                        ((ModeSetting) setting).setMode(settingValue.getAsString());
+                        Setting setting = module.getSetting(settingName);
+                        if (setting instanceof NumberSetting) {
+                            ((NumberSetting) setting).setValue(settingValue.getAsFloat());
+                        }
+                        if (setting instanceof BooleanSetting) {
+                            ((BooleanSetting) setting).setEnabled(settingValue.getAsBoolean());
+                        }
+                        if (setting instanceof ModeSetting) {
+                            ((ModeSetting) setting).setMode(settingValue.getAsString());
+                        }
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

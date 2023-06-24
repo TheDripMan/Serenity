@@ -86,6 +86,8 @@ public class Module extends MinecraftInstance {
     public void onTick(final TickEvent event) {}
     public void onStrafe(final StrafeEvent event) {}
     public void onAttack(final AttackEvent event) {}
+    public void onBlockBB(final BlockBBEvent event) {}
+    public void onMove(final MoveEvent event) {}
 
     public Setting getSetting(String name) {
         for (Setting setting : settings) {

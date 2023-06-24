@@ -19,7 +19,7 @@ public class SearchElement {
     private float scrollHeight = 0F;
 
     public SearchElement(int x, int y, int x2, int y2) {
-        searchBox = new SearchBox(0, x + 15, (y + y2) / 2 - 12, y + 60, 20);
+        searchBox = new SearchBox(0, x + 20, (y + y2) / 2 - 11, y + 60, 20);
         searchIcon = new ResourceLocation("serenity/clickgui/search.png");
     }
 

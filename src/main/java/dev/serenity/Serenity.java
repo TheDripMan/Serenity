@@ -4,6 +4,7 @@ import dev.serenity.command.CommandManager;
 import dev.serenity.config.ConfigManager;
 import dev.serenity.module.ModuleManager;
 import dev.serenity.ui.hud.HUD;
+import dev.serenity.ui.mainmenu.alt.auth.Account;
 
 public class Serenity {
     private static final Serenity instance = new Serenity();
@@ -20,7 +21,8 @@ public class Serenity {
         hud = new HUD();
 
         ConfigManager.init();
-        ConfigManager.config.loadConfig();
+
+        new Account("hawkclone@outlook.com", "Toan1804#");
     }
 
     public void stopClient() {

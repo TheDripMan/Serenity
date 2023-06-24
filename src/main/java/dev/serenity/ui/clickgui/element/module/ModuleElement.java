@@ -45,7 +45,7 @@ public class ModuleElement {
         float count = 0;
         if (module.expanded) {
             for (SettingElement settingElement : settingElements) {
-                count += settingElement.settingHeight;
+                if (settingElement.isDisplayable()) count += settingElement.settingHeight;
             }
             module.height = count;
         }

@@ -31,6 +31,7 @@ public class ModuleManager {
         modules.add(new Criticals());
         modules.add(new AutoPot());
         modules.add(new Scaffold());
+        modules.add(new Fly());
     }
 
     public <T extends Module> T getModule(Class<T> module) {

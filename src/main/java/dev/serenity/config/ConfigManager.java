@@ -8,7 +8,7 @@ import java.io.File;
 public class ConfigManager extends MinecraftInstance {
     public static final File dir = new File(mc.mcDataDir, Serenity.getInstance().getName());
     public static final File configsDir = new File(dir, "configs");
-    public static final Config config = new Config("default.json");
+    public static Config config;
 
     public static void init() {
         if(!dir.exists()) {
@@ -17,6 +17,9 @@ public class ConfigManager extends MinecraftInstance {
         if(!configsDir.exists()) {
             configsDir.mkdir();
         }
+
+        config = new Config("default.json");
+        config.loadConfig();
     }
 
     public static void stop() {
