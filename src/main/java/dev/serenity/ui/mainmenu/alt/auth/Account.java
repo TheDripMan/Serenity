@@ -9,13 +9,13 @@ import net.minecraft.util.Session;
 public class Account {
     private String name;
     private String email;
-    private String passworld;
+    private String password;
     private MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
     private Type type;
 
-    public Account(String email, String passworld) {
+    public Account(String email, String password) {
         this.email = email;
-        this.passworld = passworld;
+        this.password = password;
         this.type = Type.PREMIUM;
     }
 
@@ -26,21 +26,14 @@ public class Account {
     public void login() {
         if (type == Type.PREMIUM) {
             try {
-                MicrosoftAuthResult result = authenticator.loginWithCredentials(email, passworld);
+                MicrosoftAuthResult result = authenticator.loginWithCredentials(email, password);
                 Minecraft.getMinecraft().session = new Session(result.getProfile().getName(), result.getProfile().getId(), result.getAccessToken(), "legacy");
+
             } catch (MicrosoftAuthenticationException e) {
                 throw new RuntimeException(e);
             }
         } else {
             Minecraft.getMinecraft().session = new Session(this.name, "", "", "legacy");
         }
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassworld() {
-        return passworld;
     }
 }

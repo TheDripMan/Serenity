@@ -52,11 +52,11 @@ public class KillAura extends Module {
             }
         }
     };
-    private final NumberSetting range = new NumberSetting("Range",5,2.0f,5.0f,0.05f,this);
+    private final NumberSetting range = new NumberSetting("Range",3.8F,1.0f,8.0f,0.05f,this);
     private final ModeSetting priority = new ModeSetting("Priority",new String[]{"Distance", "Health"},"Distance",this);
     private final BooleanSetting playersOnly = new BooleanSetting("Players Only", false, this);
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", true, this);
-    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Grim"}, "Fake",this);
+    public final ModeSetting blockMode = new ModeSetting("Block Mode", new String[]{"None", "Fake", "Packet"}, "Fake",this);
     private final ModeSetting blockTiming = new ModeSetting("Block Timing", new String[]{"Pre", "Post"}, "Post", this, () -> !blockMode.getCurrentMode().equals("None") && !blockMode.getCurrentMode().equals("Fake"));
     private final BooleanSetting swing = new BooleanSetting("Swing", true, this);
     private final BooleanSetting silentRotations = new BooleanSetting("Silent Rotation", true, this);
@@ -119,6 +119,8 @@ public class KillAura extends Module {
 
     @Override
     public void onUpdate(UpdateEvent event) {
+        updateTargets();
+
         if(target != null && isValidTarget(target)) {
             targetPosX = target.posX;
             targetPosY = target.posY;
@@ -135,7 +137,6 @@ public class KillAura extends Module {
 
     @Override
     public void onPreMotion(PreMotionEvent event) {
-        updateTargets();
         if(target != null && isValidTarget(target)) {
             if (blockTiming.getCurrentMode().equals("Pre")) block();
 
@@ -211,7 +212,7 @@ public class KillAura extends Module {
             mc.thePlayer.setItemInUse(mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.getCurrentItem().getMaxItemUseDuration());
             blocking = true;
             switch (blockMode.getCurrentMode()) {
-                case "Grim": {
+                case "Packet": {
                     mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()));
                     break;
                 }
@@ -224,7 +225,7 @@ public class KillAura extends Module {
         if (!blockMode.getCurrentMode().equals("None")) {
             blocking = false;
             switch (blockMode.getCurrentMode()) {
-                case "Grim": {
+                case "Packet": {
                     break;
                 }
             }

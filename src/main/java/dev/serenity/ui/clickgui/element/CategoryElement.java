@@ -5,6 +5,7 @@ import dev.serenity.module.Category;
 import dev.serenity.module.Module;
 import dev.serenity.ui.clickgui.element.module.ModuleElement;
 import dev.serenity.ui.font.Fonts;
+import dev.serenity.utilities.animation.Animate;
 import dev.serenity.utilities.other.HoveringUtils;
 import dev.serenity.utilities.render.RenderUtils;
 import dev.serenity.utilities.render.Stencil;
@@ -86,7 +87,7 @@ public class CategoryElement {
 
     public void handleScrolling(int wheel) {
         if (wheel != 0) {
-            float scrollChange = (wheel > 0) ? 20F : -20F;
+            float scrollChange = (wheel > 0) ? 20 : -20F;
 
             Category.selectedCategory.scrollHeight += scrollChange;
             if (Category.selectedCategory.scrollHeight > 0) Category.selectedCategory.scrollHeight = 0F;

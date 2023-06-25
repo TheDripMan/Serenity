@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Serenity">
+    <output-path>$PROJECT_DIR$/out/artifacts/Serenity</output-path>
+    <root id="archive" name="Serenity.jar">
+      <element id="module-output" name="Serenity" />
+    </root>
+  </artifact>
+</component>
